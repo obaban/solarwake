@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarWake: Defeating Regolith</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            height: 100vh;
+            font-family: sans-serif;
+            color: #FFD700; /* Весь текст желтый */
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .layout {
+            display: flex;
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+        }
+        /* styles loading menu */
+        #menu-placeholder {
+            height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 1px solid #FFD700;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .logo { width: 120px; margin-bottom: 30px; display: block; }
+        .nav-menu { list-style: none; padding: 0; margin: 0; }
+        .nav-item { margin-bottom: 10px; }
+        .main-link, .category {
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFD700;
+            text-decoration: none;
+        }
+        .main-link a, .submenu li a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .category::after { content: '▼'; font-size: 0.7em; transition: 0.3s; }
+        .category.active::after { transform: rotate(-180deg); }
+        .submenu { list-style: none; padding-left: 15px; display: none; margin: 5px 0; }
+        .submenu.show { display: block; }
+        .submenu li { padding: 5px 0; font-size: 0.85em; opacity: 0.8; }
+        .submenu li:hover { opacity: 1; text-decoration: underline; }
+        .bottom-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #FFD700; }
+
+        .content {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        h1 { font-size: 2.2em; margin-top: 0; text-transform: uppercase; color: #FFD700; }
+        p { line-height: 1.6; font-size: 1.1em; max-width: 800px; margin-bottom: 25px; color: #FFD700; }
+a {
+    color: #FFD700 !important;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+p, h1, .category, .main-link {
+            color: #FFD700 !important;
+        }
+
+        .sidebar a, .submenu li a, a {
+            color: #00ccff !important;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar a:hover, .submenu li a:hover, a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        .sidebar a:visited, a:visited {
+            color: #00ccff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="layout">
+        <div id="menu-placeholder"></div>
+
+        <main class="content">
+            <h1><p>Defeating Regolith</p></h1>
+            
+
+<p>On the Moon and asteroids, dust is a genuine nightmare for any base. It is fine, airborne, and works its way into engines, optics, rover mechanisms, and even crew spacesuits. Without an atmosphere, particles are easily lofted by moving vehicles or walking crew and settle everywhere, creating hazards for both health and equipment. On Earth, wind and water long ago wore down sharp edges, but on airless bodies the dust stays put and can blanket everything around it, turning every construction project and surface traverse into a constant battle with microparticles.</p>
+<p>This seems like an unsolvable problem, given the sheer scale of the Moon. But if you think about it, bases, production facilities, and food growing don't need to happen in unprepared locations.</p>
+<p>To bind the dust and simultaneously prepare the surface for wheeled vehicles, the ground is first compacted to create a dense base. But simple compaction doesn't solve everything: to keep the dust down and prevent it from becoming airborne again, a strong yet flexible bond between particles is needed. This is achieved using gaseous silicon monoxide — SiO — which can be produced by heating regolith in simple crucibles using solar concentrators.</p>
+<p>There is no need to melt the regolith or pour concrete over everything. A thin film deposited from the gas phase coats the regolith particles at the surface. The gas is delivered onto the compacted surface under a lightweight protective screen, and upon contact with the cold regolith it condenses, forming a nanometer-scale coating of silicon and silicon dioxide. Each regolith particle acquires its own layer, which mechanically bonds it to neighboring particles, creating a dielectric, chemically inert, and heat-resistant crust. It does not crack under temperature cycling and withstands thousands of heating and cooling cycles, because each bridge between particles is independent and only nanometers thick — mechanical stress is distributed across millions of points rather than across a single monolithic slab.</p>
+<p>This coating provides protection against electrostatic dust lofting, but it cannot be driven or walked on. The next step is therefore laying a metal mesh mat on top of this crust. The mat consists of interwoven spring-tempered wires of an iron-titanium alloy, 0.1 mm in diameter, with an overall thickness of 4–8 cm. The mat compresses under load, allowing rover wheels to press into it by 2–3 cm, while regolith particles settle between the wires and remain there until scheduled cleaning. The mat simultaneously serves multiple functions: it provides a road surface with familiar traction for mesh wheels, retains dust within its structure, acts as a shock absorber for passing vehicles, and can participate in electrostatic dust collection.</p>
+<p>The mat is secured to the surface without fasteners, or onto pre-installed anchor points — its weight and structure are sufficient to hold it in place under low gravity. Mat panels are laid edge to edge, forming continuous coverage of any area. Borders are installed around the perimeter to catch particles migrating from adjacent sections. When needed, a dedicated rover cleans the dust once a week by applying one charge to the metal mat and the opposite polarity to a collector plate it carries.</p>
+<p>The advantages of the system are clear: large industrial areas can be processed quickly without point-by-point laser sintering; only 10 grams of gas are required per square meter; and the mat provides durability, traction, and protection.</p>
+<p>The mats can also serve as the foundation for subsurface construction. Cables and beams anchored to the mats create a structural framework for habitation modules, warehouses, or laboratories, bypassing loose regolith as a load-bearing medium entirely. This allows self-sufficient systems to be built with minimal underground excavation, avoiding the risk of collapse. This approach is particularly well suited to asteroid construction. The combination of a dielectric crust, metal mat, and periodic dust collection creates a multi-layer protection system capable of operating for decades, supporting base operations on the Moon and asteroids with minimal human intervention.</p>
+<p>Taken together, the system simultaneously addresses several problems: binding dust, preparing road surfaces for rovers, protecting equipment and crew spacesuits, making use of production byproducts, minimizing energy consumption, and laying the groundwork for future construction.</p>
+        </main>
+    </div>
+
+    <script>
+        // load menu
+        fetch('menu.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('menu-placeholder').innerHTML = data;
+                document.querySelectorAll('.category').forEach(btn => {
+                    btn.onclick = () => {
+                        btn.classList.toggle('active');
+                        btn.nextElementSibling.classList.toggle('show');
+                    };
+                });
+            });
+
+        // sparks
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 1.2;
+                this.speedY = (Math.random() - 0.5) * 1.2;
+                this.size = Math.random() * 2.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.init();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(176, 224, 230, ${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 180; i++) particles.push(new Particle());
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

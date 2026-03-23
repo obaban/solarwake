@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarWake: Ice. Cheapest asteroid habitat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            height: 100vh;
+            font-family: sans-serif;
+            color: #FFD700; /* Весь текст желтый */
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .layout {
+            display: flex;
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+        }
+        /* styles loading menu */
+        #menu-placeholder {
+            height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 1px solid #FFD700;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .logo { width: 120px; margin-bottom: 30px; display: block; }
+        .nav-menu { list-style: none; padding: 0; margin: 0; }
+        .nav-item { margin-bottom: 10px; }
+        .main-link, .category {
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFD700;
+            text-decoration: none;
+        }
+        .main-link a, .submenu li a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .category::after { content: '▼'; font-size: 0.7em; transition: 0.3s; }
+        .category.active::after { transform: rotate(-180deg); }
+        .submenu { list-style: none; padding-left: 15px; display: none; margin: 5px 0; }
+        .submenu.show { display: block; }
+        .submenu li { padding: 5px 0; font-size: 0.85em; opacity: 0.8; }
+        .submenu li:hover { opacity: 1; text-decoration: underline; }
+        .bottom-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #FFD700; }
+
+        .content {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        h1 { font-size: 2.2em; margin-top: 0; text-transform: uppercase; color: #FFD700; }
+        p { line-height: 1.6; font-size: 1.1em; max-width: 800px; margin-bottom: 25px; color: #FFD700; }
+a {
+    color: #FFD700 !important;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+p, h1, .category, .main-link {
+            color: #FFD700 !important;
+        }
+
+        .sidebar a, .submenu li a, a {
+            color: #00ccff !important;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar a:hover, .submenu li a:hover, a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        .sidebar a:visited, a:visited {
+            color: #00ccff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="layout">
+        <div id="menu-placeholder"></div>
+
+        <main class="content">
+            <h1><p>Ice. Cheapest asteroid habitat</p></h1>
+            
+
+<p>When people think of space construction, they imagine things brought from Earth: metal modules, inflatable structures, and titanium bolts. All this is packed into a rocket, flies for months, and costs as much as a small city. But space colonization is a story about the balance between what is brought and what is produced locally. On-site, you can manufacture everything except complex electronics. Asteroid mining is often seen as just a quarry, but in space, the rules change completely. An asteroid is a ready-made shield against radiation and meteorites where production can happen directly. We primarily need a shelter that is quick to build and reliable.</p>
+<p>Ice is incredibly abundant out there. Comets are up to 80% ice, and many C-type asteroids hold vast water reserves in their soil. Probes like Rosetta and OSIRIS-REx have already confirmed this isn't just theory. However, ice is an exceptionally fickle building material. Natural ice has a strength of only 2–3 MPa, while standard concrete holds 40 MPa.</p>
+<p>The second issue is the extreme temperature swings. Ice expands and contracts three times more intensely than steel, creating micro-cracks that leak air. Then there is sublimation: in a vacuum, ice turns directly into gas, meaning a thick wall could simply vanish over time. Finally, the ground itself is loose and weightless, making traditional foundations useless.</p>
+<p>Current NASA and ESA projects focus on Moon or Mars regolith, but they lack a systemic solution for icy bodies. Our solution starts by rethinking ice itself. By depositing water vapor at minus 70 degrees, we create crystalline ice. This material reaches 10 MPa. We extract vapor from the ground by heating it to only 100 degrees Celsius and grow monolithic walls layer by layer.</p>
+<p>For reinforcement, we use basalt and iron-nickel rocks melted by concentrated sunlight. This creates stone fibers, or rockwool, which form the internal mesh and external insulation. Active thermal control tubes keep the ice at a constant temperature to prevent cracking. We solve sublimation by applying a protective organic coating derived from local comet matter. Instead of foundations, we hang structures from external frames or use internal tension. This turns extraterrestrial building from a logistics nightmare into a pure engineering task.</p>
+        </main>
+    </div>
+
+    <script>
+        // load menu
+        fetch('menu.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('menu-placeholder').innerHTML = data;
+                document.querySelectorAll('.category').forEach(btn => {
+                    btn.onclick = () => {
+                        btn.classList.toggle('active');
+                        btn.nextElementSibling.classList.toggle('show');
+                    };
+                });
+            });
+
+        // sparks
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 1.2;
+                this.speedY = (Math.random() - 0.5) * 1.2;
+                this.size = Math.random() * 2.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.init();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(176, 224, 230, ${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 180; i++) particles.push(new Particle());
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

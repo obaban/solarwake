@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Wake: Our Mission</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            height: 100vh;
+            font-family: sans-serif;
+            color: #FFD700; /* Весь текст желтый */
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .layout {
+            display: flex;
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+        }
+        /* styles loading menu */
+        #menu-placeholder {
+            height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 1px solid #FFD700;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .logo { width: 120px; margin-bottom: 30px; display: block; }
+        .nav-menu { list-style: none; padding: 0; margin: 0; }
+        .nav-item { margin-bottom: 10px; }
+        .main-link, .category {
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFD700;
+            text-decoration: none;
+        }
+        .main-link a, .submenu li a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .category::after { content: '▼'; font-size: 0.7em; transition: 0.3s; }
+        .category.active::after { transform: rotate(-180deg); }
+        .submenu { list-style: none; padding-left: 15px; display: none; margin: 5px 0; }
+        .submenu.show { display: block; }
+        .submenu li { padding: 5px 0; font-size: 0.85em; opacity: 0.8; }
+        .submenu li:hover { opacity: 1; text-decoration: underline; }
+        .bottom-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #FFD700; }
+
+        .content {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        h1 { font-size: 2.2em; margin-top: 0; text-transform: uppercase; color: #FFD700; }
+        p { line-height: 1.6; font-size: 1.1em; max-width: 800px; margin-bottom: 25px; color: #FFD700; }
+a {
+    color: #FFD700 !important;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+p, h1, .category, .main-link {
+            color: #FFD700 !important;
+        }
+
+        .sidebar a, .submenu li a, a {
+            color: #00ccff !important;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar a:hover, .submenu li a:hover, a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        .sidebar a:visited, a:visited {
+            color: #00ccff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="layout">
+        <div id="menu-placeholder"></div>
+
+        <main class="content">
+            <h1><p>Worm</p></h1>
+            
+
+<p><strong>The Second Line of Defense: A Suit That Doesn't Try to Do Everything — and Works Because of It</strong></p>
+<p>In the previous post we covered the first line of defense — an everyday jacket with an integrated hood, a built-in oxygen cartridge, and compression chambers across the body. It buys you five to ten minutes of conscious movement during decompression. Now let's talk about what happens with those minutes — and why the second line of defense needs to look nothing like what people usually imagine.</p>
+<p><strong>What a Person in an Activated Self-Rescuer Actually Looks Like</strong></p>
+<p>Picture this person in a corridor after an accident. The hood is inflated — a transparent sphere about forty centimeters in diameter hanging around the head. The jacket is swollen around its entire perimeter from the working compression chambers. The trousers have gained volume too. The silhouette has become noticeably wider, mobility has dropped significantly, and the center of gravity has shifted unpredictably.</p>
+<p>He walks carefully, keeps a hand on the wall, watches the map on the hood display. He has a few minutes — and that's a realistic window if the system was designed correctly. The only task for those minutes is to reach the second line of defense.</p>
+<p><strong>Why a Standard Spacesuit Physically Doesn't Work Here</strong></p>
+<p>A traditional working spacesuit is designed for a person in normal clothing with a normal silhouette. The narrow neck ring assumes a head without an inflated hood. The fitted sleeves assume arms without compression chambers. The entry hatch was built for a body of standard proportions in standard clothing.</p>
+<p>A person in an activated self-rescuer simply cannot get into that suit, especially without help. The inflated hood adds forty centimeters to the diameter of the head. The swollen jacket increases torso circumference by several sizes. Removing the self-rescuer before donning the suit means returning to the same twenty-second problem that opened the previous post.</p>
+<p>So what's needed is a suit designed with a clear understanding of who exactly will be climbing into it, and in what condition.</p>
+<p><strong>The Worm: You Crawl In, You Don't Put It On</strong></p>
+<p>The name captures the logic better than any technical description. No defined neck section that would block an inflated hood. No separate leg tubes that require placing each foot individually. A monolithic volume — a wide helmet transitions smoothly into broad shoulders and a full-body shell with no narrow points. At the bottom sits a single shared bag for both legs, where they're simply dropped in one motion.</p>
+<p>The suit is stored folded and flat, attached to the wall on a magnetic mount. One shake deploys it into working position — no unpacking, no searching for the right orientation. Under partial weightlessness and acute stress, any action requiring a precise sequence becomes many times harder than in calm conditions, so the need for precision at every step has been deliberately eliminated.</p>
+<p>The zippers close both from outside and inside — because at some point the hands will be inside the shell and sealing will have to be completed blind, by touch. After closing, one motion activates the foam system: a chemical reaction fills the seams in five seconds, and the cartridge begins supplying oxygen automatically.</p>
+<p><strong>The Rigidity Problem and an Elegant Solution</strong></p>
+<p>Any pressurized suit becomes rigid — internal pressure works to straighten the flexible material, resisting any bend. An arm in such a sleeve cannot bend without significant effort against the pressure. This is the so-called sausage effect, familiar to suit engineers since the earliest Soviet and American programs.</p>
+<p>In the Worm, the default working position is hands not in the sleeves but pulled inside the torso section. The sleeves hang empty on the outside. Inside the shell the person moves their hands freely, can examine themselves, apply a bandage, give an injection, address a minor problem — all without fighting pressure in the sleeves at all. The torso bag adjusts with straps — it can be cinched to fit the person's volume or loosened for more freedom of movement inside.</p>
+<p>When something needs to be done outside — the hands go into the sleeves, perform the action, return. Wide soft straps inside the sleeves at the elbows and shoulders handle the rigidity. The logic is simple: need to reach something — cinch the elbow strap, complete the movement, release. The sleeve returns to straight, pressure redistributes back. A brief compression from a wide band for a few seconds creates no circulation problems and doesn't cut into the arm through the suit material. The same straps adjust sleeve length — one size serves people with noticeably different arm lengths without any pre-fitting.</p>
+<p>In a more advanced version the sleeves can be replaced by external manipulators controlled from inside — the hands stay warm and comfortable inside the shell while mechanical grippers work outside. This is an optional solution for versions with expanded functionality, but the basic design works without it.</p>
+<p>For the torso, external straps with a small portable winch allow the overall volume of the suit to be reduced, making it possible to pass through a narrow technical opening or take a seated position. On the back of the helmet sits a bright orange handle — called the loser handle. If the person loses consciousness, a rescuer grabs it and tows them in low gravity without additional equipment.</p>
+<p><strong>Why the Worm Is Not a Real Spacesuit — and Why That's Correct</strong></p>
+<p>It's important to be honest here. The Worm won't protect against micrometeorites during extended surface work. It has no radiation shielding for multi-hour exposure in the open. It is not designed for full surface operations and makes no pretense of being so.</p>
+<p>That said, a brief surface excursion is within its capability. Running to a rover, crossing between airlocks, evacuating to an adjacent module through open space — there's enough margin for that. The distinction to understand is between "I can step outside for ten minutes" and "I can work outside all day."</p>
+<p>Precisely because the task has been deliberately narrowed, the design becomes radically simpler and cheaper. A real spacesuit costs fifteen million dollars not because manufacturers are greedy, but because it solves twenty complex engineering problems simultaneously — each with zero tolerance for failure. Twenty layers of material. Mechanical joints engineered against pressure. A liquid thermal regulation system. Individual fitting for each astronaut. Manual certification of every seam.</p>
+<p>The Worm solves a different three tasks: prevent asphyxiation, prevent barotrauma, and provide enough time and mobility to wait for a rescue robot, wait for a rescue team, or independently reach a pressurized space — a base module, a rover, a spacecraft. Everything else has been deliberately thrown overboard.</p>
+<p><strong>How Breathing, CO2, and Overheating Are Solved by One Loop</strong></p>
+<p>The three main physiological problems of a sealed suit — oxygen depletion, carbon dioxide buildup, and body overheating — are addressed in the Worm by a single air circuit, not three separate systems.</p>
+<p>The absence of a body-hugging fit, which might seem like a design weakness, becomes an advantage here. Between the body and the shell there is a constant free volume through which air moves at minimal fan pressure. A small fan at the bottom of the suit draws air from the leg area, pushes it through the CO2 scrubber cartridge, routes it through a heat exchanger toward the outer shell, and returns it cleaned and cooled to the face area. One closed loop covers breathing, carbon dioxide, and temperature simultaneously.</p>
+<p>Heat from the body transfers through the heat exchanger to the outer metallized shell of the suit and radiates outward passively. Metallized coatings normally work as mirrors — reflecting solar radiation from outside. But the Worm is used indoors where there is no sun — and the same surface works in reverse, radiating body heat into the cold walls of the base. A small phase-change block remains as a buffer during peak load from active movement.</p>
+<p>The result: a fan, a scrubber cartridge, a compact heat exchanger, and a metallized shell as a passive radiator. No pumps, no liquid circuits, no complex mechanisms with failure modes.</p>
+<p><strong>Autonomy: Tanks and Cartridges</strong></p>
+<p>Pressure and breathing are actively maintained throughout the entire period of use. The built-in cartridge provides the initial supply, but the system supports connection of additional oxygen tanks from the base's emergency reserves. Mounting brackets for connecting both oxygen cartridges and CO2 scrubber cartridges are located inside the torso section and on the outside of the shell — accessible whether the hands are inside or outside. The CO2 scrubber cartridge is replaceable without breaching the main volume. Autonomy time is therefore not fixed by the design but determined by how many consumables are available nearby.</p>
+<p><strong>What This Costs and Why</strong></p>
+<p>A good dry suit for technical diving with quality waterproof zippers costs between two and five thousand dollars — and solves a roughly comparable class of problems around sealing flexible material around a body. The Worm is more complex, but conceptually it sits closer to that class of product than to a fifteen-million-dollar spacesuit.</p>
+<p>All components are serial or near-serial production. Flexible TPU laminate is an industrial material. Waterproof zippers exist and are widely used. The CO2 scrubber cartridge is a standard consumable from diving rebreathers. A small low-voltage fan is a mass-market item. Phase-change material is produced in series for industrial applications. Metallized coating is cheaper than most other components.</p>
+<p>At serial production with industrial certification, a realistic unit price is ten to thirty thousand dollars. With full space certification and a complete test cycle — up to one hundred thousand. Even the upper bound differs from a real spacesuit by a factor of one hundred and fifty.</p>
+<p>This changes the entire logistics of the base. Placing several dozen storage points across corridors, workshops, and hangars stops being a painful compromise and becomes a routine engineering decision.</p>
+<p><strong>Two Lines of Defense as One Designed System</strong></p>
+<p>The first line of defense is on you at all times and requires no preparation to be ready. Activated with one motion in a few seconds, it provides protection for several minutes of conscious movement.</p>
+<p>The second line of defense is no more than a hundred meters away at any point on the base, and is designed for a person in exactly the physical condition they will arrive in — wearing inflated clothing, with reduced mobility and elevated stress. It goes on in seconds and provides autonomous protection for as long as consumables are available nearby.</p>
+<p>Between these two lines there is no room for heroism or lucky circumstances. There is the logic of a system designed for a real person in real accident conditions — not for a trained astronaut in an ideal training scenario.</p>
+        </main>
+    </div>
+
+    <script>
+        // load menu
+        fetch('menu.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('menu-placeholder').innerHTML = data;
+                document.querySelectorAll('.category').forEach(btn => {
+                    btn.onclick = () => {
+                        btn.classList.toggle('active');
+                        btn.nextElementSibling.classList.toggle('show');
+                    };
+                });
+            });
+
+        // sparks
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 1.2;
+                this.speedY = (Math.random() - 0.5) * 1.2;
+                this.size = Math.random() * 2.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.init();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(176, 224, 230, ${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 180; i++) particles.push(new Particle());
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

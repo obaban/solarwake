@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Wake: Our Mission</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            height: 100vh;
+            font-family: sans-serif;
+            color: #FFD700; /* Весь текст желтый */
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .layout {
+            display: flex;
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+        }
+        /* styles loading menu */
+        #menu-placeholder {
+            height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 1px solid #FFD700;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .logo { width: 120px; margin-bottom: 30px; display: block; }
+        .nav-menu { list-style: none; padding: 0; margin: 0; }
+        .nav-item { margin-bottom: 10px; }
+        .main-link, .category {
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFD700;
+            text-decoration: none;
+        }
+        .main-link a, .submenu li a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .category::after { content: '▼'; font-size: 0.7em; transition: 0.3s; }
+        .category.active::after { transform: rotate(-180deg); }
+        .submenu { list-style: none; padding-left: 15px; display: none; margin: 5px 0; }
+        .submenu.show { display: block; }
+        .submenu li { padding: 5px 0; font-size: 0.85em; opacity: 0.8; }
+        .submenu li:hover { opacity: 1; text-decoration: underline; }
+        .bottom-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #FFD700; }
+
+        .content {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        h1 { font-size: 2.2em; margin-top: 0; text-transform: uppercase; color: #FFD700; }
+        p { line-height: 1.6; font-size: 1.1em; max-width: 800px; margin-bottom: 25px; color: #FFD700; }
+a {
+    color: #FFD700 !important;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+p, h1, .category, .main-link {
+            color: #FFD700 !important;
+        }
+
+        .sidebar a, .submenu li a, a {
+            color: #00ccff !important;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar a:hover, .submenu li a:hover, a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        .sidebar a:visited, a:visited {
+            color: #00ccff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="layout">
+        <div id="menu-placeholder"></div>
+
+        <main class="content">
+            <h1><p>Centrifugal Engine for Asteroid Propulsion</p></h1>
+            
+
+<p>Various ideas exist for using asteroid material as propellant: vaporizing the surface with sunlight, lasers, nuclear explosions. All of them generate thrust through recoil, but require enormous energy and complex technologies. Mass drivers — devices that eject chunks of rock — also operate on the recoil principle, but precise trajectory control requires either a strong magnetic response or special fittings on each projectile, making the system expensive and complex. We have nothing against any of these technologies, however on small celestial bodies a mass driver is still feasible, whereas building a thermonuclear reactor raises serious questions.</p>
+<p>The centrifugal engine offers a simpler and more reliable approach. The core principle: a rotating disk accelerates asteroid material and ejects it, generating a controlled impulse. The disk is made of a high-strength material — for example, a carbon composite with nanotubes — capable of withstanding enormous centrifugal loads. The nanotubes form a spoke-like structure from the center to the rim. The theoretical maximum tip speed of such a rotor is on the order of 8 km/s, while real laboratory nanotube samples today sustain around 3 km/s, and their production in microgravity promises a substantial improvement in quality.</p>
+<p>Asteroid material — rock, oxides, residues from ice processing — is fed at the disk's axis and accelerated by centrifugal force toward the rim. Dedicated channels, conveyor belts, and buckets retard and hold the mass until the moment of ejection. Without this, the material would scatter in all directions rather than along a single vector. Upon exiting through the guide channel, the mass transfers its impulse to the asteroid, generating controlled thrust.</p>
+<p>The key advantage of this system is that no external propellant is required to accelerate the ejecta: all energy goes into spinning the disk, and the impulse is transferred directly to the asteroid. Even with modest instantaneous thrust, the impulse accumulates over time, enabling trajectory corrections over millions of kilometers, gravitational maneuvers, and collision avoidance.</p>
+<p>Thus, the centrifugal engine turns an asteroid into a steerable object, using its own material as propellant. It is a simple, reliable, and energy-efficient method of moving small celestial bodies, opening new possibilities for exploration, Earth defense, and the utilization of space resources.</p>
+        </main>
+    </div>
+
+    <script>
+        // load menu
+        fetch('menu.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('menu-placeholder').innerHTML = data;
+                document.querySelectorAll('.category').forEach(btn => {
+                    btn.onclick = () => {
+                        btn.classList.toggle('active');
+                        btn.nextElementSibling.classList.toggle('show');
+                    };
+                });
+            });
+
+        // sparks
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 1.2;
+                this.speedY = (Math.random() - 0.5) * 1.2;
+                this.size = Math.random() * 2.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.init();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(176, 224, 230, ${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 180; i++) particles.push(new Particle());
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

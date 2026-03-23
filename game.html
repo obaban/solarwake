@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarWake: The Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            height: 100vh;
+            font-family: sans-serif;
+            color: #FFD700; /* Весь текст желтый */
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .layout {
+            display: flex;
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+        }
+        /* styles loading menu */
+        #menu-placeholder {
+            height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 1px solid #FFD700;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .logo { width: 120px; margin-bottom: 30px; display: block; }
+        .nav-menu { list-style: none; padding: 0; margin: 0; }
+        .nav-item { margin-bottom: 10px; }
+        .main-link, .category {
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFD700;
+            text-decoration: none;
+        }
+        .main-link a, .submenu li a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .category::after { content: '▼'; font-size: 0.7em; transition: 0.3s; }
+        .category.active::after { transform: rotate(-180deg); }
+        .submenu { list-style: none; padding-left: 15px; display: none; margin: 5px 0; }
+        .submenu.show { display: block; }
+        .submenu li { padding: 5px 0; font-size: 0.85em; opacity: 0.8; }
+        .submenu li:hover { opacity: 1; text-decoration: underline; }
+        .bottom-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #FFD700; }
+
+        .content {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        h1 { font-size: 2.2em; margin-top: 0; text-transform: uppercase; color: #FFD700; }
+        p { line-height: 1.6; font-size: 1.1em; max-width: 800px; margin-bottom: 25px; color: #FFD700; }
+a {
+    color: #FFD700 !important;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+p, h1, .category, .main-link {
+            color: #FFD700 !important;
+        }
+
+        .sidebar a, .submenu li a, a {
+            color: #00ccff !important;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar a:hover, .submenu li a:hover, a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        .sidebar a:visited, a:visited {
+            color: #00ccff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="layout">
+        <div id="menu-placeholder"></div>
+
+        <main class="content">
+            <h1><p>The Game</p></h1>
+<p><em>On one of those scorching days — there are no other kind at the equator — the player boarded a stratospheric airship. Twelve kilometers of altitude, and beyond that — the tether of a low-orbit elevator, ascent and acceleration along a magnetic tunnel on a cart that had just been hurtling toward the tail end of the orbital station, hovering above the airship. Twenty minutes later their capsule, accelerated by the maglev of the elevator tunnel flying above Earth at 130 kilometers altitude, broke free into space at 14 km/s. Two days in a cramped tin can — and then docking with the cycler: a quarter of the former near-Earth asteroid Kamo'oalewa, which had changed its orbit and was heading into the Main Belt.</em></p>
+<p><em>After a year of flight they undocked and began their approach to the target.</em></p>
+<p><em>Choose your destination, check your cargo and crew.</em></p>            
+
+<p>We are looking for partners — a team or studio — to create a game about the colonization of the Solar System, with a focus on asteroids. We initially envision it as a browser game for testing core mechanics, with the potential to develop further and port to other platforms.</p>
+<p>At its core it is Factorio, SimCity, or RimWorld — a simulator with production chains and a multiplayer environment. But the main feature is something else entirely.</p>
+<p>In any game, an object is a black box. The developer sets the parameters, the player lives with them. We broke that wall.</p>
+<p>Any object in the game can be opened up. Objects can be created. The player clicks "Add Layer" and describes what is inside the object — components, connections, logic. Each component becomes a live object with its own parameters and modifiers on the parent. It can be detailed further. And further. Theoretically without limit. Every modification inside subtly but measurably changes the properties of the parent object. Objects can be used by the player alone or by everyone.</p>
+<p>It is like Minecraft — but not in space, but in depth of detail.</p>
+<p>The key thing this delivers: expert content is created by the players themselves. An engineer who describes an electrolyzer correctly will have their version — verified by AI and a moderator — performing better than their neighbor's. The developer only needs to configure filters and policies.</p>
+<p>We are looking for a team that understands this creates a new genre.</p>
+<p>The method and algorithm are patented and protected by copyright. If you wish to build your own game with these capabilities, we recommend getting in touch with us. The system also works for crafting, alchemy, magic, character profiles, maps, and more.</p>
+<p>We see this as more than a game — a breakthrough in generating technologies for space. Yes, many ideas will turn out to be unrealistic or inefficient, but some will be built in hardware, and perhaps not just once or twice.</p>
+
+
+        </main>
+    </div>
+
+    <script>
+        // load menu
+        fetch('menu.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('menu-placeholder').innerHTML = data;
+                document.querySelectorAll('.category').forEach(btn => {
+                    btn.onclick = () => {
+                        btn.classList.toggle('active');
+                        btn.nextElementSibling.classList.toggle('show');
+                    };
+                });
+            });
+
+        // sparks
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 1.2;
+                this.speedY = (Math.random() - 0.5) * 1.2;
+                this.size = Math.random() * 2.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.init();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(176, 224, 230, ${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 180; i++) particles.push(new Particle());
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

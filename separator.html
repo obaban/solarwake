@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarWake:Separator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            height: 100vh;
+            font-family: sans-serif;
+            color: #FFD700; /* Весь текст желтый */
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .layout {
+            display: flex;
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+        }
+        /* styles loading menu */
+        #menu-placeholder {
+            height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 1px solid #FFD700;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .logo { width: 120px; margin-bottom: 30px; display: block; }
+        .nav-menu { list-style: none; padding: 0; margin: 0; }
+        .nav-item { margin-bottom: 10px; }
+        .main-link, .category {
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFD700;
+            text-decoration: none;
+        }
+        .main-link a, .submenu li a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .category::after { content: '▼'; font-size: 0.7em; transition: 0.3s; }
+        .category.active::after { transform: rotate(-180deg); }
+        .submenu { list-style: none; padding-left: 15px; display: none; margin: 5px 0; }
+        .submenu.show { display: block; }
+        .submenu li { padding: 5px 0; font-size: 0.85em; opacity: 0.8; }
+        .submenu li:hover { opacity: 1; text-decoration: underline; }
+        .bottom-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #FFD700; }
+
+        .content {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        h1 { font-size: 2.2em; margin-top: 0; text-transform: uppercase; color: #FFD700; }
+        p { line-height: 1.6; font-size: 1.1em; max-width: 800px; margin-bottom: 25px; color: #FFD700; }
+a {
+    color: #FFD700 !important;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+p, h1, .category, .main-link {
+            color: #FFD700 !important;
+        }
+
+        .sidebar a, .submenu li a, a {
+            color: #00ccff !important;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar a:hover, .submenu li a:hover, a:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        .sidebar a:visited, a:visited {
+            color: #00ccff !important;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="layout">
+        <div id="menu-placeholder"></div>
+
+        <main class="content">
+            <h1><p>Separator</p></h1>
+            
+
+<p>Wherever you are — the Moon, an asteroid, a comet — from the first minute you're surrounded by regolith. Not rocks. Dust. Ultrafine, electrostatically charged, sharp as glass. It gets into everything: lungs, mechanisms, optics, seals. Apollo astronauts spent hours cleaning suits after every EVA. At a permanent base that becomes daily life for years.</p>
+<p>But regolith isn't only a problem. It's a resource. A fairly rich one.</p>
+<p>One tonne of typical regolith contains: iron and nickel, graphite and soot, sulphides, silicates, sulphates, oxides — dozens of components all mixed together. You can melt rocks whole. Dust doesn't work that way — the components interfere with each other, processing them simultaneously is inefficient, and often simply impossible. You need to separate them first.</p>
+<p>Separation methods exist — magnetic, thermal, chemical, electrostatic. Each works for its own class of materials. High-conductivity metals separate differently from silicates. Graphite differently from sulphides. A universal tool didn't exist.</p>
+<p><strong>The Separator as the First Tool</strong></p>
+<p>At the start of a colony, you have nothing to crush rock with. Heavy mining equipment is the second or third stage, not the first. But dust is already there. Everywhere. Collecting it, running it through a separator, and getting the first grams of metal, carbon, silicates — that's a realistic starting point. And less dust in the air means a healthier crew, cleaner optics, longer-lived mechanisms.</p>
+<p><strong>How It Works</strong></p>
+<p>Picture a sealed tank — a cylindrical chamber. Inside it, two ceramic tubes wound into spirals rotate continuously. Each tube has small inlet holes along its length. This is not accidental — particles can only enter one way: by electrical attraction. If a particle isn't charged enough, it just keeps floating around in the tank. The tube selects what it takes.</p>
+<p>The first tube runs at high voltage — metals with high conductivity charge instantly and fly into the openings. They deposit on the walls. The second tube runs at lower voltage — it takes graphite and soot, which charge more slowly. Silicates and sulphates stay in the tank — their conductivity is too low to charge sufficiently.</p>
+<p>The classic engineering problem with such systems is that electrodes clog. Metals are dense, soot is sticky. The solution is simple: every few seconds, polarity reverses for milliseconds. The deposited material detaches from the wall. Then geometry takes over: the tube is spinning, centrifugal force drives the detached material outward from the centre — straight along the spiral of the tube — and ejects it into a collection bin at the end. Not back into the tank, not in some random direction — directly into the bin. Electrodes clean again. Like shaking out a carpet, except automatically and thousands of times an hour.</p>
+<p>The system operates from deep vacuum to ten atmospheres, from minus two hundred to two thousand degrees Celsius. Voltage, current frequency, rotation speed — all adjustable for the specific regolith composition of a specific body. One tool for the Moon, an asteroid, and a comet.</p>
+<p><strong>What You Get Out</strong></p>
+<p>From one tonne of regolith — around ten kilograms of metals, twenty-five kilograms of carbon in various forms, and a remainder of cleaned silicates and sulphates with albedo three times higher than the original material. That last part is a non-obvious bonus: processed surface reflects more light, heats less, outgasses less. If you're on a comet, that directly affects the stability of the body and the predictability of its behaviour.</p>
+<p>First metal. First carbon. Cleaner air. All from dust that was already under your feet.</p>
+        </main>
+    </div>
+
+    <script>
+        // load menu
+        fetch('menu.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('menu-placeholder').innerHTML = data;
+                document.querySelectorAll('.category').forEach(btn => {
+                    btn.onclick = () => {
+                        btn.classList.toggle('active');
+                        btn.nextElementSibling.classList.toggle('show');
+                    };
+                });
+            });
+
+        // sparks
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 1.2;
+                this.speedY = (Math.random() - 0.5) * 1.2;
+                this.size = Math.random() * 2.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.init();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(176, 224, 230, ${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 180; i++) particles.push(new Particle());
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

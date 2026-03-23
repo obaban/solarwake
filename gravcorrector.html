@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Wake: Our Mission</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+            overflow: hidden;
+            height: 100vh;
+            font-family: sans-serif;
+            color: #FFD700; /* Весь текст желтый */
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .layout {
+            display: flex;
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+        }
+        /* Стили для подгружаемого меню */
+        #menu-placeholder {
+            height: 100vh;
+        }
+        .sidebar {
+            width: 280px;
+            padding: 30px 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border-right: 1px solid #FFD700;
+            height: 100%;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        .logo { width: 120px; margin-bottom: 30px; display: block; }
+        .nav-menu { list-style: none; padding: 0; margin: 0; }
+        .nav-item { margin-bottom: 10px; }
+        .main-link, .category {
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFD700;
+            text-decoration: none;
+        }
+        .main-link a, .submenu li a {
+            color: inherit;
+            text-decoration: none;
+        }
+        .category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .category::after { content: '▼'; font-size: 0.7em; transition: 0.3s; }
+        .category.active::after { transform: rotate(-180deg); }
+        .submenu { list-style: none; padding-left: 15px; display: none; margin: 5px 0; }
+        .submenu.show { display: block; }
+        .submenu li { padding: 5px 0; font-size: 0.85em; opacity: 0.8; }
+        .submenu li:hover { opacity: 1; text-decoration: underline; }
+        .bottom-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #FFD700; }
+
+        .content {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        h1 { font-size: 2.2em; margin-top: 0; text-transform: uppercase; color: #FFD700; }
+        p { line-height: 1.6; font-size: 1.1em; max-width: 800px; margin-bottom: 25px; color: #FFD700; }
+    </style>
+</head>
+<body>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="layout">
+        <div id="menu-placeholder"></div>
+
+        <main class="content">
+            <h1>GravCorrector</h1>
+            <p>Humans need gravity. A year or slightly more can be spent in weightlessness, but throughout that time health steadily deteriorates: bones lose mass, muscles atrophy, and both vision and the cardiovascular system suffer. Exercise is used to counteract this — but what if a person falls ill or is injured? Beyond Earth orbit, evacuation is not an option.</p>
+<p>The answer lies in centrifugal force, but small-radius habitats cause dizziness, nausea, and discomfort, while large ones demand enormous resources — the O'Neill cylinder being the prime example. Such vast structures carry another unpleasant property: they cannot maneuver, and the people living inside cannot freely leave and return, since they face the problem of re-adapting their vestibular system each time. Moreover, a large meteorite impact is quite capable of tearing away part of the structure — which would instantly fly off — shifting the center of mass and inducing precession, a thoroughly disagreeable outcome. If James Bond happened to be at the space station bar at that moment, he would not be able to order his favorite "shaken, not stirred." For this reason, such structures are designed from the outset at scales of many kilometers.</p>
+<p>This demands a population in the millions — otherwise, what is the point — yet even on Earth, conceived megaprojects collapse more often than they succeed. Space settlements will grow from units to tens to hundreds. And that demands a solution to artificial gravity that people will actually want to live with, because the weight of isolation is burden enough for anyone.</p>
+<p>Fortunately, the answer exists. In the near future, in 2031, a technological breakthrough will occur. For legal reasons I cannot name the companies and researchers from Harvard, Geneva, and the Chicago boys from an Israeli mountaintop. This breakthrough will be tied first and foremost to a political decision — the authorization of such procedures on healthy individuals.</p>
+<p>The second breakthrough will be the implantation of electrodes into Scarpa's ganglion — not as simple contacts, but with semiconductor logic and capacitors integrated into a cuff electrode around the nerve. This raised switching speed, enabled real-time signal filtering, and reduced operating currents, yielding good physiological outcomes and a long implant service life. In this way the electrode becomes a frequency gate that does not relay signals from the head unit, but receives commands — which frequency to pass — and modifies the signal by adding or suppressing peaks.</p>
+<p>The head unit itself is a pair of implants equipped with accelerometers and RFID read/write devices, which report with sufficient precision the user's position within the artificial-gravity cylinder and determine which Coriolis effects must be compensated.</p>
+<p>Applying this technology allows the diameter of a comfortable habitat to be reduced to 50 meters, in turn bringing its mass down to tens of tonnes. At that scale, axial loads and vibration become low enough that such a habitat can be placed inside natural cavities in celestial bodies and planetary surfaces, with radiation and meteorite shielding delegated to an outer, non-rotating shell.</p>
+<p>Also important — adaptation when transitioning now takes seconds rather than days. One can rest under normal gravity and step into weightlessness without discomfort. An additional benefit is a reduction in blood pooling in the head: the implant activates the vestibulosympathetic reflex by simulating the relevant signal, in response to which the brain constricts the neck vessels via the vasomotor center.</p>
+        </main>
+    </div>
+
+    <script>
+        // Загрузка меню
+        fetch('menu.html')
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById('menu-placeholder').innerHTML = data;
+                document.querySelectorAll('.category').forEach(btn => {
+                    btn.onclick = () => {
+                        btn.classList.toggle('active');
+                        btn.nextElementSibling.classList.toggle('show');
+                    };
+                });
+            });
+
+        // Частицы
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speedX = (Math.random() - 0.5) * 1.2;
+                this.speedY = (Math.random() - 0.5) * 1.2;
+                this.size = Math.random() * 2.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.init();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(176, 224, 230, ${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 180; i++) particles.push(new Particle());
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
