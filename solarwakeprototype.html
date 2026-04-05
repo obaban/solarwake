@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLAR WAKE — Electrolyzer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --surface2: #f8fafc;
+  --border: #d0dce8;
+  --border2: #a0b8d0;
+  --accent: #0066cc;
+  --accent-light: #e8f0ff;
+  --green: #007700;
+  --green-light: #e8f5e8;
+  --red: #cc0000;
+  --red-light: #fff0ee;
+  --orange: #cc4400;
+  --orange-light: #fff5f0;
+  --gold: #996600;
+  --gold-light: #fffbe8;
+  --text: #1a2530;
+  --text2: #4a6070;
+  --text3: #8aa0b8;
+  --depth1: #0066cc;
+  --depth2: #cc4400;
+  --depth3: #007700;
+  --depth4: #996600;
+  --depth5: #6600cc;
+}
+
+body {
+  background: var(--bg);
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 12px 80px;
+}
+
+/* ── HEADER ── */
+.page-header {
+  background: var(--text);
+  color: #fff;
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.page-header h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(.85rem, 3vw, 1.1rem);
+  font-weight: 900;
+  letter-spacing: 3px;
+  margin-bottom: 3px;
+}
+.page-header h1 span { color: #66aaff; }
+.page-header p { font-size: .78rem; color: #99aacc; }
+
+/* ── INTRO ── */
+.intro {
+  background: var(--accent-light);
+  border: 1.5px solid var(--accent);
+  border-radius: 6px;
+  padding: 11px 14px;
+  margin-bottom: 16px;
+  font-size: .83rem;
+  color: var(--text);
+  line-height: 1.65;
+}
+.intro b { color: var(--accent); }
+
+/* ── MAIN OBJECT CARD ── */
+.obj-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  position: relative;
+}
+.obj-card.open { border-color: var(--accent); box-shadow: 0 2px 12px rgba(0,102,204,.1); }
+
+.obj-head {
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  position: relative;
+}
+.obj-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+.obj-meta { flex: 1; min-width: 0; }
+.obj-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(.8rem, 2.5vw, 1rem);
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.obj-card.open .obj-name { color: var(--accent); }
+.obj-type { font-size: .68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.obj-configure-btn {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 10px;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--text2);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.obj-configure-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+/* ── DIMENSIONS ── */
+.dim-bar {
+  background: var(--surface2);
+  border-top: 1.5px solid var(--border);
+  border-bottom: 1.5px solid var(--border);
+  padding: 8px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+.dim-item { text-align: center; }
+.dim-label { font-size: .58rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.dim-value { font-family: 'Orbitron', sans-serif; font-size: .78rem; font-weight: 700; }
+.dim-sep { color: var(--border2); font-size: 1rem; }
+.space-bar-wrap { flex: 1; min-width: 140px; }
+.space-bar-label { font-size: .6rem; color: var(--text3); margin-bottom: 3px; display: flex; justify-content: space-between; }
+.space-bar-label span { font-weight: 700; }
+.space-bar-bg { height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.space-bar-fill { height: 100%; border-radius: 4px; transition: width .5s, background .3s; }
+
+/* ── FLOW ── */
+.flow-section {
+  padding: 12px 16px;
+  border-bottom: 1.5px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: stretch;
+}
+.flow-box {
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 9px 12px;
+  flex: 1;
+  min-width: 150px;
+}
+.flow-title {
+  font-size: .62rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.phys-link {
+  font-size: .58rem;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.flow-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+  gap: 6px;
+}
+.flow-row:last-child { margin-bottom: 0; }
+.flow-key { font-size: .7rem; color: var(--text2); }
+.flow-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .7rem;
+  font-weight: 700;
+  text-align: right;
+}
+.flow-val input {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .7rem;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  width: 52px;
+  text-align: right;
+  outline: none;
+  border-bottom: 1px dashed var(--border2);
+}
+.flow-outputs {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 150px;
+}
+.flow-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: var(--border2);
+  padding: 0 2px;
+  align-self: center;
+}
+
+/* ── PARAMS ROW ── */
+.params-row {
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1.5px solid var(--border);
+}
+.param-cell {
+  flex: 1;
+  min-width: 80px;
+  padding: 8px 10px;
+  border-right: 1.5px solid var(--border);
+  text-align: center;
+  transition: background .4s;
+}
+.param-cell:last-child { border-right: none; }
+.param-cell.flash { background: #fffbe0; }
+.param-label { font-size: .58rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+.param-value { font-family: 'Orbitron', sans-serif; font-size: .82rem; font-weight: 700; }
+
+/* ── DANGER ── */
+.danger-bar {
+  display: none;
+  background: var(--red-light);
+  border-top: 2px solid var(--red);
+  padding: 10px 16px;
+  align-items: center;
+  gap: 10px;
+}
+.danger-bar.show { display: flex; }
+.danger-icon { font-size: 1.3rem; flex-shrink: 0; }
+.danger-title { font-weight: 700; color: var(--red); font-size: .82rem; }
+.danger-text { font-size: .72rem; color: #882200; margin-top: 2px; line-height: 1.5; }
+
+/* ── CONFIGURE MENU ── */
+.configure-menu {
+  position: absolute;
+  top: 48px; right: 12px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  z-index: 100;
+  min-width: 200px;
+  overflow: hidden;
+  display: none;
+}
+.configure-menu.show { display: block; }
+.menu-item {
+  padding: 10px 14px;
+  font-size: .83rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #f0f4f8;
+  color: var(--text);
+  transition: background .1s;
+}
+.menu-item:last-child { border-bottom: none; }
+.menu-item:hover { background: var(--surface2); }
+.menu-item .mi-icon { width: 18px; text-align: center; }
+.menu-item .mi-sub { font-size: .65rem; color: var(--text3); margin-top: 1px; }
+.menu-item.danger-item { color: var(--orange); }
+.menu-item.danger-item:hover { background: var(--orange-light); }
+
+/* ── SECTION TITLE ── */
+.sec-title {
+  font-size: .68rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 16px 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sec-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── RECURSIVE COMPONENT TREE ── */
+.comp-tree { display: flex; flex-direction: column; gap: 6px; }
+
+.comp-node {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  overflow: hidden;
+}
+.comp-node.open { border-color: var(--border2); }
+
+/* depth colours on left border */
+.comp-node[data-depth="0"] { border-left: 3px solid var(--depth1); }
+.comp-node[data-depth="1"] { border-left: 3px solid var(--depth2); }
+.comp-node[data-depth="2"] { border-left: 3px solid var(--depth3); }
+.comp-node[data-depth="3"] { border-left: 3px solid var(--depth4); }
+.comp-node[data-depth="4"] { border-left: 3px solid var(--depth5); }
+
+.comp-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background .1s;
+}
+.comp-head:hover { background: var(--surface2); }
+.comp-icon { font-size: 1.2rem; width: 26px; text-align: center; flex-shrink: 0; }
+.comp-info { flex: 1; min-width: 0; }
+.comp-name { font-weight: 600; font-size: .85rem; color: var(--text); }
+.comp-node.open .comp-name { color: var(--accent); }
+.comp-sub { font-size: .66rem; color: var(--text3); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.comp-vol-badge {
+  font-family: 'Orbitron', sans-serif;
+  font-size: .65rem;
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.comp-action-btn {
+  padding: 3px 9px;
+  border: 1.5px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: .68rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.comp-action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.comp-toggle {
+  width: 24px; height: 24px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  font-size: .75rem;
+  color: var(--text3);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.comp-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+.comp-body {
+  display: none;
+  padding: 0 12px 12px;
+  border-top: 1px solid #f0f4f8;
+}
+.comp-node.open .comp-body { display: block; }
+
+.comp-desc {
+  font-size: .78rem;
+  color: var(--text2);
+  line-height: 1.6;
+  margin: 10px 0 10px;
+  padding: 8px 10px;
+  background: var(--surface2);
+  border-left: 2px solid var(--border2);
+  border-radius: 0 4px 4px 0;
+}
+
+.comp-props {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.comp-prop {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 5px 8px;
+}
+.comp-prop-label { font-size: .55rem; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.comp-prop-value { font-family: 'Orbitron', sans-serif; font-size: .72rem; font-weight: 700; }
+
+/* versions */
+.comp-versions-title {
+  font-size: .62rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+.ver-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border: 1.5px solid var(--border);
+  border-radius: 5px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: all .15s;
+  background: var(--surface);
+}
+.ver-item:hover { border-color: var(--accent); background: var(--accent-light); }
+.ver-item.active { border-color: var(--green); background: var(--green-light); }
+.ver-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: .75rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.ver-item.active .ver-avatar { background: var(--green-light); color: var(--green); }
+.ver-info { flex: 1; min-width: 0; }
+.ver-name { font-size: .78rem; font-weight: 600; color: var(--text); }
+.ver-sub { font-size: .62rem; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ver-badge {
+  font-size: .62rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ver-badge.pos { background: var(--green-light); color: var(--green); }
+.ver-badge.neu { background: var(--surface2); color: var(--text3); }
+.ver-badge.act { background: var(--green); color: #fff; }
+.ver-badge.neg { background: #ffe8e8; color: var(--red); }
+.install-btn {
+  padding: 3px 9px;
+  border: 1.5px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: .68rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.install-btn:hover { background: var(--accent); color: #fff; }
+
+/* children recursion */
+.comp-children {
+  margin-top: 10px;
+}
+.comp-children-title {
+  font-size: .6rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.comp-children-title::after { content:''; flex:1; height:1px; background:var(--border); }
+.children-indent {
+  border-left: 2px solid var(--border);
+  margin-left: 6px;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* add form */
+.add-form {
+  display: none;
+  background: var(--accent-light);
+  border: 1.5px solid var(--accent);
+  border-radius: 6px;
+  padding: 13px;
+  margin-top: 8px;
+}
+.add-form.show { display: block; }
+.add-form-title { font-weight: 700; font-size: .85rem; color: var(--accent); margin-bottom: 11px; }
+.af-row { margin-bottom: 9px; }
+.af-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 9px; }
+.af-label { font-size: .62rem; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+.af-input {
+  width: 100%;
+  border: 1.5px solid #c0d4e8;
+  border-radius: 5px;
+  padding: 7px 9px;
+  font-family: 'Inter', sans-serif;
+  font-size: .82rem;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  transition: border-color .15s;
+}
+.af-input:focus { border-color: var(--accent); }
+.af-textarea {
+  width: 100%;
+  border: 1.5px solid #c0d4e8;
+  border-radius: 5px;
+  padding: 7px 9px;
+  font-family: 'Inter', sans-serif;
+  font-size: .82rem;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  resize: vertical;
+  min-height: 60px;
+  transition: border-color .15s;
+}
+.af-textarea:focus { border-color: var(--accent); }
+.af-hint { font-size: .62rem; color: var(--text3); margin-top: 3px; line-height: 1.5; }
+.af-btns { display: flex; gap: 6px; margin-top: 10px; }
+.af-btn {
+  flex: 1;
+  padding: 8px;
+  border-radius: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  transition: all .15s;
+}
+.af-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.af-btn.primary:hover { background: #0055bb; }
+.ai-result {
+  display: none;
+  margin-top: 8px;
+  border-radius: 5px;
+  padding: 9px 12px;
+  font-size: .75rem;
+  line-height: 1.65;
+}
+.ai-result.show { display: block; }
+.ai-result.ok { background: var(--green-light); border: 1.5px solid var(--green); }
+.ai-result.warn { background: var(--gold-light); border: 1.5px solid #cc8800; }
+.ai-result.bad { background: var(--red-light); border: 1.5px solid var(--red); }
+.ai-result b { font-weight: 700; }
+
+/* add-new button */
+.add-new-btn {
+  width: 100%;
+  padding: 9px;
+  background: var(--surface);
+  border: 2px dashed var(--border2);
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--text3);
+  cursor: pointer;
+  margin-top: 6px;
+  transition: all .2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.add-new-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+/* addons */
+.addon-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 5px;
+  background: var(--surface);
+  transition: all .15s;
+}
+.addon-item.installed { border-color: var(--green); background: var(--green-light); }
+.addon-icon { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }
+.addon-info { flex: 1; min-width: 0; }
+.addon-name { font-weight: 600; font-size: .82rem; color: var(--text); }
+.addon-sub { font-size: .65rem; color: var(--text3); }
+
+/* physics popup */
+.phys-popup {
+  position: fixed;
+  background: var(--text);
+  color: #d0e0f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  max-width: min(300px, 90vw);
+  font-size: .78rem;
+  line-height: 1.65;
+  z-index: 999;
+  box-shadow: 0 8px 32px rgba(0,0,0,.3);
+  display: none;
+  pointer-events: none;
+}
+.phys-popup.show { display: block; }
+.phys-popup-title { font-weight: 700; color: #66aaff; margin-bottom: 6px; font-size: .82rem; }
+.phys-popup b { color: #fff; }
+.phys-popup .formula { font-family: 'Orbitron', sans-serif; font-size: .68rem; color: #66ffcc; margin: 5px 0; }
+.phys-close { pointer-events: all; cursor: pointer; float: right; color: #8aa0b8; font-size: .75rem; }
+
+/* toast */
+#toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 999; display: flex; flex-direction: column; align-items: center; gap: 5px; pointer-events: none; }
+.toast-item { background: var(--text); color: #fff; padding: 7px 16px; border-radius: 20px; font-size: .78rem; font-weight: 500; box-shadow: 0 4px 16px rgba(0,0,0,.15); animation: tIn .3s ease, tOut .4s ease 2.3s forwards; white-space: nowrap; }
+@keyframes tIn { from{opacity:0;transform:translateY(8px)} }
+@keyframes tOut { to{opacity:0;transform:translateY(-4px)} }
+
+#overlay { position: fixed; inset: 0; z-index: 50; display: none; }
+#overlay.show { display: block; }
+
+.page-footer { margin-top: 32px; padding: 14px 16px; background: var(--text); border-radius: 8px; font-size: .75rem; color: #7a90a8; line-height: 1.8; }
+.page-footer b { color: #fff; }
+.page-footer a { color: #66aaff; text-decoration: none; }
+
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 12px;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: .72rem;
+  color: var(--text3);
+}
+.breadcrumb-item {
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.breadcrumb-item:hover { color: #0044aa; }
+.breadcrumb-sep { color: var(--border2); }
+.breadcrumb-current { color: var(--text); font-weight: 600; white-space: nowrap; }
+
+/* ── PER-NODE ADDONS ── */
+.node-addons { margin-top: 10px; }
+.node-addons-title {
+  font-size: .6rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.node-addons-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── FLOW COMPOSITION ── */
+.flow-comp { margin-top: 4px; }
+.flow-comp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: .62rem;
+  color: var(--text3);
+  margin-bottom: 2px;
+}
+.flow-comp-bar-wrap { flex: 1; margin: 0 6px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.flow-comp-bar { height: 100%; border-radius: 2px; }
+.flow-comp-pct { font-family: 'Orbitron', sans-serif; font-size: .6rem; font-weight: 700; min-width: 36px; text-align: right; }
+.contamination-box {
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: #fff8ee;
+  border: 1px solid #cc8800;
+  border-radius: 4px;
+  font-size: .68rem;
+  color: #664400;
+  line-height: 1.6;
+}
+.contamination-box b { color: #cc4400; }
+
+/* ── MOBILE ── */
+@media (max-width: 500px) {
+  .af-row-2 { grid-template-columns: 1fr; }
+  .comp-props { grid-template-columns: 1fr 1fr; }
+  .params-row { flex-direction: column; }
+  .param-cell { border-right: none; border-bottom: 1.5px solid var(--border); }
+  .param-cell:last-child { border-bottom: none; }
+  .flow-section { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); align-self: center; }
+  .dim-bar { gap: 6px 10px; }
+}
+</style>
+</head>
+<body>
+<div id="overlay" onclick="closeAll()"></div>
+<div class="phys-popup" id="phys-popup">
+  <span class="phys-close" onclick="closePhys()">✕</span>
+  <div class="phys-popup-title" id="pp-title"></div>
+  <div id="pp-body"></div>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <h1>⬡ SOLAR <span>WAKE</span></h1>
+    <p>Object Depth Demo — any object can be opened without limit</p>
+  </div>
+
+  <div class="intro">
+    In any game, an object is a black box. <b>We broke that wall.</b><br>
+    Open any object. Open what's inside it. Open that. Go as deep as you want — the same interface works at every level.
+  </div>
+
+  <!-- MAIN OBJECT -->
+  <div class="obj-card open" id="main-obj">
+    <div class="obj-head">
+      <div class="obj-icon">⚗️</div>
+      <div class="obj-meta">
+        <div class="obj-name">Water Electrolyzer</div>
+        <div class="obj-type">Life Support · H₂ / O₂ Production</div>
+      </div>
+      <button class="obj-configure-btn" onclick="toggleMainMenu(event)">⚙ Configure</button>
+      <div class="configure-menu" id="main-menu">
+        <div class="menu-item" onclick="closeAll();toast('Add version — use components below')">
+          <span class="mi-icon">⊕</span><div>Add version<div class="mi-sub">Describe what's inside</div></div>
+        </div>
+        <div class="menu-item" onclick="closeAll();toast('Modify — coming in full game')">
+          <span class="mi-icon">✏️</span><div>Modify object<div class="mi-sub">Edit parameters</div></div>
+        </div>
+        <div class="menu-item danger-item" onclick="closeAll();toast('⚑ Report submitted')">
+          <span class="mi-icon">⚑</span><div>Report error<div class="mi-sub">Physically wrong</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dim-bar">
+      <div class="dim-item"><div class="dim-label">L</div><div class="dim-value">60cm</div></div>
+      <div class="dim-sep">×</div>
+      <div class="dim-item"><div class="dim-label">W</div><div class="dim-value">40cm</div></div>
+      <div class="dim-sep">×</div>
+      <div class="dim-item"><div class="dim-label">H</div><div class="dim-value">40cm</div></div>
+      <div class="dim-sep">=</div>
+      <div class="dim-item"><div class="dim-label">Volume</div><div class="dim-value">96 L</div></div>
+      <div class="space-bar-wrap">
+        <div class="space-bar-label">Free space <span id="free-pct">38%</span></div>
+        <div class="space-bar-bg"><div class="space-bar-fill" id="space-bar" style="width:62%;background:#0066cc"></div></div>
+      </div>
+    </div>
+
+    <div class="flow-section">
+      <div class="flow-box">
+        <div class="flow-title">💧 Water In <span class="phys-link" onclick="showPhys('electrolysis',event)">why?</span></div>
+        <div class="flow-row"><span class="flow-key">Temperature</span><span class="flow-val"><input type="number" id="in-temp" value="20" min="1" max="99" onchange="recalc()"> °C</span></div>
+        <div class="flow-row"><span class="flow-key">Pressure</span><span class="flow-val"><input type="number" id="in-press" value="1.0" min="0.1" max="10" step="0.1" onchange="recalc()"> bar</span></div>
+        <div class="flow-row"><span class="flow-key">Flow rate</span><span class="flow-val"><input type="number" id="in-flow" value="36" min="0.1" max="200" step="0.5" onchange="recalc()"> L/h</span></div>
+        <div style="margin-top:6px;border-top:1px solid var(--border);padding-top:5px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <span style="font-size:.7rem;font-weight:700;color:#0066cc;">H₂O 99.6%</span>
+            <span style="font-size:.65rem;color:var(--text3);cursor:pointer;text-decoration:underline;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">dissolved salts ▾</span>
+          </div>
+          <div style="display:none;">
+            <div class="flow-comp-row"><span>NaCl</span><div class="flow-comp-bar-wrap"><div class="flow-comp-bar" style="width:77%;background:#cc8800"></div></div><span class="flow-comp-pct" style="color:#cc8800">0.10%</span></div>
+            <div class="flow-comp-row"><span>CaCl₂</span><div class="flow-comp-bar-wrap"><div class="flow-comp-bar" style="width:23%;background:#aa6600"></div></div><span class="flow-comp-pct" style="color:#aa6600">0.02%</span></div>
+            <div class="flow-comp-row"><span>MgSO₄</span><div class="flow-comp-bar-wrap"><div class="flow-comp-bar" style="width:12%;background:#886600"></div></div><span class="flow-comp-pct" style="color:#886600">0.01%</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-outputs">
+        <div class="flow-box">
+          <div class="flow-title">🔵 H₂ Out <span class="phys-link" onclick="showPhys('h2pressure',event)">why?</span></div>
+          <div class="flow-row"><span class="flow-key">Temp</span><span class="flow-val" id="out-h2-temp" style="color:#0066cc">—</span></div>
+          <div class="flow-row"><span class="flow-key">Pressure</span><span class="flow-val" id="out-h2-press" style="color:#0066cc">—</span></div>
+          <div class="flow-row"><span class="flow-key">Flow</span><span class="flow-val" id="out-h2-flow" style="color:#0066cc">—</span></div>
+          <div style="margin-top:5px;border-top:1px solid var(--border);padding-top:4px;">
+            <div style="font-size:.58rem;color:var(--text3);margin-bottom:3px;font-weight:700;letter-spacing:1px;">PURITY</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+              <span style="font-size:.7rem;font-weight:700;color:#0066cc;">H₂ 99.9%</span>
+              <span style="font-size:.65rem;color:var(--text3);cursor:pointer;text-decoration:underline;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">impurities ▾</span>
+            </div>
+            <div style="display:none;">
+              <div class="flow-comp-row"><span>H₂O vapor</span><div class="flow-comp-bar-wrap"><div class="flow-comp-bar" style="width:100%;background:#88aacc"></div></div><span class="flow-comp-pct" style="color:#88aacc">~0.1%</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-box">
+          <div class="flow-title">🔴 O₂ Out <span class="phys-link" onclick="showPhys('o2ratio',event)">why?</span></div>
+          <div class="flow-row"><span class="flow-key">Temp</span><span class="flow-val" id="out-o2-temp" style="color:#cc4400">—</span></div>
+          <div class="flow-row"><span class="flow-key">Pressure</span><span class="flow-val" id="out-o2-press" style="color:#cc4400">—</span></div>
+          <div class="flow-row"><span class="flow-key">Flow</span><span class="flow-val" id="out-o2-flow" style="color:#cc4400">—</span></div>
+          <div style="margin-top:5px;border-top:1px solid var(--border);padding-top:4px;">
+            <div style="font-size:.58rem;color:var(--text3);margin-bottom:3px;font-weight:700;letter-spacing:1px;">PURITY</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+              <span style="font-size:.7rem;font-weight:700;color:#cc4400;">O₂ 99.9%</span>
+              <span style="font-size:.65rem;color:var(--text3);cursor:pointer;text-decoration:underline;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">impurities ▾</span>
+            </div>
+            <div style="display:none;">
+              <div class="flow-comp-row"><span>H₂O vapor</span><div class="flow-comp-bar-wrap"><div class="flow-comp-bar" style="width:100%;background:#cc8866"></div></div><span class="flow-comp-pct" style="color:#cc8866">~0.1%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flow-arrow">⚡</div>
+      <div class="flow-box">
+        <div class="flow-title">⚡ Power <span class="phys-link" onclick="showPhys('losses',event)">why?</span></div>
+        <div class="flow-row"><span class="flow-key">Input</span><span class="flow-val" style="color:#996600" id="pf-power">2400W</span></div>
+        <div class="flow-row"><span class="flow-key">Efficiency</span><span class="flow-val" style="color:#007700" id="pf-eff">60%</span></div>
+        <div class="flow-row"><span class="flow-key">Heat loss</span><span class="flow-val" style="color:#cc4400" id="pf-heat">—</span></div>
+        <div class="flow-row"><span class="flow-key">ΔT</span><span class="flow-val" style="color:#cc4400" id="pf-dt">—</span></div>
+      </div>
+    </div>
+
+    <div class="params-row">
+      <div class="param-cell" id="pc-eff"><div class="param-label">Efficiency</div><div class="param-value" style="color:#007700" id="pv-eff">60.0%</div></div>
+      <div class="param-cell" id="pc-h2"><div class="param-label">H₂ Out</div><div class="param-value" style="color:#0066cc" id="pv-h2">—</div></div>
+      <div class="param-cell" id="pc-o2"><div class="param-label">O₂ Out</div><div class="param-value" style="color:#cc4400" id="pv-o2">—</div></div>
+      <div class="param-cell"><div class="param-label">Heat loss</div><div class="param-value" style="color:#996600" id="pv-heat">—</div></div>
+    </div>
+
+    <!-- CONTAMINATION -->
+    <div id="contamination-box" style="display:none;padding:8px 16px;background:#fff8ee;border-top:1.5px solid #cc8800;">
+      <div style="font-size:.72rem;font-weight:700;color:#cc4400;margin-bottom:3px;">⚠ Bath Contamination Accumulation</div>
+      <div style="font-size:.72rem;color:#664400;line-height:1.7" id="contamination-text">—</div>
+    </div>
+
+    <div class="danger-bar" id="danger-bar">
+      <div class="danger-icon">🔥</div>
+      <div><div class="danger-title">⚠ DANGER — System overheating</div><div class="danger-text" id="danger-text">No cooling. Install cooling system.</div></div>
+    </div>
+  </div>
+
+  <!-- LAYER 1 -->
+  <div id="breadcrumb-wrap"></div>
+  <div class="sec-title">Layer 1 — Components inside</div>
+  <div class="comp-tree" id="comp-tree"></div>
+
+  <!-- ADD-ONS -->
+  <div class="sec-title" id="addons-sec-title">Add-ons & optional modules</div>
+  <div id="addons-list"></div>
+  <button class="add-new-btn" onclick="showTopForm()">⊕ Add custom component</button>
+  <div class="add-form" id="top-add-form">
+    <div class="add-form-title">⊕ Add component to Electrolyzer</div>
+    <div class="af-row-2">
+      <div><div class="af-label">Your name</div><input class="af-input" id="taf-author" placeholder="Name or callsign"></div>
+      <div><div class="af-label">Component name</div><input class="af-input" id="taf-name" placeholder="e.g. Overheat relay"></div>
+    </div>
+    <div class="af-row"><div class="af-label">Task — what does it do?</div><textarea class="af-textarea" id="taf-task" placeholder="Function, materials, connections..."></textarea></div>
+    <div class="af-row-2">
+      <div><div class="af-label">Dimensions (L×W×H cm)</div><input class="af-input" id="taf-dims" placeholder="e.g. 20×10×10"></div>
+      <div><div class="af-label">Effect on efficiency</div><input class="af-input" id="taf-eff" placeholder="e.g. +2%, neutral"></div>
+    </div>
+    <div class="af-btns">
+      <button class="af-btn primary" onclick="submitTopForm()">Submit for AI verification</button>
+      <button class="af-btn" onclick="hideTopForm()">Cancel</button>
+    </div>
+    <div class="ai-result" id="taf-result"></div>
+  </div>
+
+  <div class="page-footer">
+    <b>Any object can be opened further — without limit.</b> An engineer who correctly describes a component will have a version that performs better than their neighbor's — verified by AI.<br><br>
+    Looking for a development team that understands this creates a new genre. → <a href="https://solarwake.pro">solarwake.pro</a>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// PHYSICS EXPLANATIONS
+// ═══════════════════════════════════════
+const PHYS = {
+  electrolysis: { title:'Why does water split?', body:`Applying voltage above <b>1.23V</b> breaks H₂O electrochemically.<div class="formula">2H₂O → 2H₂ + O₂</div><b>Cathode (−):</b> 2H⁺ + 2e⁻ → H₂ ↑<br><b>Anode (+):</b> H₂O → ½O₂ + 2H⁺ + 2e⁻ ↑<br>Real systems need 1.8–2.2V due to electrode overpotentials.` },
+  h2pressure: { title:'Why this output pressure?', body:`Output pressure depends on <b>cell design and back-pressure</b>. In a simple open cell gas exits near input pressure. Higher pressure → smaller bubbles → better electrode contact.` },
+  o2ratio: { title:'Why 1:2 ratio (O₂ : H₂)?', body:`Fixed by stoichiometry:<div class="formula">2H₂O → 2H₂ + O₂</div>Two H₂O → two H₂ + one O₂. This ratio cannot be changed by any design.` },
+  losses: { title:'Where does heat go?', body:`Energy that doesn't split water becomes heat:<br>• Electrode overpotential<br>• Ohmic resistance in membrane<br>• Bubble formation losses<div class="formula">Q = P × (1 − η)</div>Without cooling this heat raises output temperature.` },
+  waterfilter: { title:'What does the filter do?', body:`Removes <b>solid particles and suspended matter</b> — sediment, debris, particulates from asteroid ice.<br><br>Does <b>NOT</b> remove dissolved salts or minerals. For long electrode lifetime a <b>distillation unit upstream is strongly recommended</b>.` },
+  pump: { title:'Why separate pumps?', body:`H₂ and O₂ must be <b>completely separated</b> — mixing creates explosive gas. Magnetic drive seal: contactless, no shaft through wall, zero leakage risk.` },
+  cooling: { title:'Why active cooling?', body:`Electrolysis generates heat equal to losses. Without cooling output temperature rises continuously, degrading membrane and electrode catalysts. Ammonia cooling is more efficient in vacuum than water.` },
+};
+
+// ═══════════════════════════════════════
+// DATA MODEL — RECURSIVE TREE
+// ═══════════════════════════════════════
+const TOTAL_VOL = 96;
+
+// Each node: { id, icon, name, sub, vol, desc, physKey, props[], versions[], children[] }
+// versions: { id, author, name, sub, effDelta, active, verified }
+// children: same structure recursively
+
+const tree = [
+  {
+    id:'filter', icon:'🔽', name:'Water Filter', sub:'Particle filtration · Pre-treatment',
+    vol:8, desc:'Removes solid particles and suspended matter from input water. Does NOT remove dissolved salts — a distillation unit upstream is strongly recommended for long electrode lifetime.',
+    physKey:'waterfilter',
+    props:[
+      {label:'Volume',value:'8 L',color:'#996600'},
+      {label:'Removes',value:'particles only',color:'#cc4400'},
+      {label:'Flow rate',value:'up to 40 L/h',color:'#0066cc'},
+      {label:'Filter life',value:'~2000 h',color:'#555'},
+    ],
+    versions:[
+      {id:'fv0',author:'Base config',name:'Standard mesh filter',sub:'Stainless steel mesh',effDelta:0,active:true,verified:true},
+      {id:'fv1',author:'Elia Martell',name:'Zeolite local synthesis',sub:'From asteroid silicates, 0 import',effDelta:+3,active:false,verified:true},
+    ],
+    children:[
+      {
+        id:'filter-mesh', icon:'🔲', name:'Filter Mesh', sub:'316L stainless steel · 50μm pore',
+        vol:1, desc:'Primary filtration element. 50 micron pore size removes particles while allowing full water flow. Backflushable.',
+        physKey:null,
+        props:[{label:'Pore size',value:'50 μm',color:'#0066cc'},{label:'Material',value:'316L SS',color:'#555'},{label:'Life',value:'~6000 h',color:'#007700'}],
+        versions:[
+          {id:'fmv0',author:'Base config',name:'50μm stainless mesh',sub:'Standard import',effDelta:0,active:true,verified:true},
+          {id:'fmv1',author:'Ygritte',name:'Basalt fiber mesh',sub:'Local manufacture, 0 import',effDelta:+1,active:false,verified:false},
+        ],
+        children:[], userChildren:[]
+      }
+    ],
+    userChildren:[]
+  },
+  {
+    id:'bath', icon:'⚗️', name:'Electrolysis Bath', sub:'Electrochemical · Core reaction vessel',
+    vol:45, desc:'Core reaction vessel. Contains electrode assembly and ion exchange membrane. Largest component — sets the performance ceiling for the entire unit.',
+    physKey:'electrolysis',
+    props:[
+      {label:'Volume',value:'45 L',color:'#996600'},
+      {label:'Cell voltage',value:'1.9 V nominal',color:'#0066cc'},
+      {label:'Current density',value:'400 mA/cm²',color:'#555'},
+      {label:'Electrode area',value:'180 cm²',color:'#555'},
+    ],
+    versions:[
+      {id:'bv0',author:'Base config',name:'Carbon electrode, basic membrane',sub:'Zero import cost',effDelta:0,active:true,verified:true},
+      {id:'bv1',author:'John Snow',name:'Platinum + Nafion membrane',sub:'Verified · highest efficiency',effDelta:+18,active:false,verified:true},
+      {id:'bv2',author:'Arya Stark',name:'Iridium + Ceramic membrane',sub:'Pending verification',effDelta:+10,active:false,verified:false},
+    ],
+    children:[
+      {
+        id:'electrode', icon:'⚡', name:'Electrode Assembly', sub:'Electrochemical · Catalytic core',
+        vol:8, desc:'The catalytic core. Cathode produces H₂, anode produces O₂. Material determines overpotential, reaction rate, and degradation.',
+        physKey:'electrolysis',
+        props:[{label:'Overpotential',value:'0.32 V',color:'#cc4400'},{label:'Surface area',value:'180 cm²',color:'#0066cc'},{label:'Lifetime',value:'8400 h',color:'#007700'}],
+        versions:[
+          {id:'ev0',author:'Base config',name:'Carbon electrode',sub:'Local manufacture',effDelta:0,active:true,verified:true},
+          {id:'ev1',author:'John Snow',name:'Platinum electrode',sub:'+18% efficiency · high cost',effDelta:+18,active:false,verified:true},
+          {id:'ev2',author:'Arya Stark',name:'Iridium electrode',sub:'Long lifetime · asteroid available',effDelta:+12,active:false,verified:true},
+        ],
+        children:[
+          {
+            id:'catalyst', icon:'🔬', name:'Catalyst Layer', sub:'Nanoscale · CVD coating',
+            vol:0.1, desc:'Thin film deposited via CVD from iron pentacarbonyl — manufacturable from asteroid iron with zero import. Determines actual reaction sites.',
+            physKey:null,
+            props:[{label:'Thickness',value:'0.003 mm',color:'#0066cc'},{label:'Coverage',value:'94%',color:'#007700'},{label:'Method',value:'CVD',color:'#555'}],
+            versions:[
+              {id:'cv0',author:'Base config',name:'Fe CVD from pentacarbonyl',sub:'Local asteroid iron',effDelta:0,active:true,verified:true},
+            ],
+            children:[], userChildren:[]
+          }
+        ],
+        userChildren:[]
+      },
+      {
+        id:'membrane', icon:'🧱', name:'Ion Exchange Membrane', sub:'Chemical · Gas separator',
+        vol:2, desc:'Separates H₂ and O₂ while allowing proton transfer. Ceramic variants can be manufactured from asteroid silicates.',
+        physKey:'electrolysis',
+        props:[{label:'Conductivity',value:'0.12 S/cm',color:'#0066cc'},{label:'Selectivity',value:'99.4%',color:'#007700'},{label:'Thickness',value:'0.18 mm',color:'#555'}],
+        versions:[
+          {id:'mv0',author:'Base config',name:'Basic polymer membrane',sub:'Standard',effDelta:0,active:true,verified:true},
+          {id:'mv1',author:'Missandei',name:'Ceramic (asteroid silicate)',sub:'0 import · higher durability',effDelta:+8,active:false,verified:true},
+          {id:'mv2',author:'Base config',name:'Nafion membrane',sub:'Highest proton conductivity',effDelta:+15,active:false,verified:true},
+        ],
+        children:[], userChildren:[]
+      }
+    ],
+    userChildren:[]
+  },
+  {
+    id:'pump-h2', icon:'🔵', name:'Hydrogen Pump', sub:'Gas handling · H₂ circuit',
+    vol:12, desc:'Extracts and pressurises hydrogen gas. Magnetic drive seal — contactless, no shaft penetration through housing wall, zero leakage risk. Critical for H₂ safety.',
+    physKey:'pump',
+    props:[{label:'Volume',value:'12 L',color:'#996600'},{label:'Max pressure',value:'8 bar',color:'#0066cc'},{label:'Flow rate',value:'up to 3000 L/h',color:'#555'},{label:'Seal type',value:'magnetic drive',color:'#555'}],
+    versions:[
+      {id:'hv0',author:'Base config',name:'Standard diaphragm pump',sub:'Earth components',effDelta:0,active:true,verified:true},
+    ],
+    children:[], userChildren:[]
+  },
+  {
+    id:'pump-o2', icon:'🔴', name:'Oxygen Pump', sub:'Gas handling · O₂ circuit',
+    vol:12, desc:'Extracts and pressurises oxygen gas. Completely isolated from H₂ circuit. Materials must be O₂-compatible — standard lubricants are fire hazards in pure oxygen. Magnetic drive seal.',
+    physKey:'pump',
+    props:[{label:'Volume',value:'12 L',color:'#996600'},{label:'Max pressure',value:'6 bar',color:'#cc4400'},{label:'Flow rate',value:'up to 1500 L/h',color:'#555'},{label:'Seal type',value:'magnetic drive',color:'#555'}],
+    versions:[
+      {id:'ov0',author:'Base config',name:'O₂-rated diaphragm pump',sub:'O₂-safe materials',effDelta:0,active:true,verified:true},
+    ],
+    children:[], userChildren:[]
+  },
+  {
+    id:'cooling', icon:'❄️', name:'Cooling System', sub:'Thermal management · not connected',
+    vol:0, desc:'Active cooling removes heat losses from electrolysis. Without cooling output temperature rises, degrading membrane and electrodes over time.',
+    physKey:'cooling',
+    props:[
+      {label:'Status',value:'NOT CONNECTED',color:'#cc0000'},
+      {label:'Volume',value:'0 L',color:'#8aa0b8'},
+      {label:'Heat removal',value:'0 W',color:'#8aa0b8'},
+      {label:'Coolant',value:'—',color:'#8aa0b8'},
+    ],
+    versions:[
+      {id:'cool0',author:'Base config',name:'No cooling',sub:'Heat accumulates',effDelta:0,active:true,verified:true,coolingW:0,addVol:0},
+      {id:'cool1',author:'Standard',name:'Water cooling loop',sub:'Removes up to 1500W',effDelta:+5,active:false,verified:true,coolingW:1500,addVol:14},
+      {id:'cool2',author:'Standard',name:'Ammonia cooling loop',sub:'Removes up to 2200W · more efficient in vacuum',effDelta:+8,active:false,verified:true,coolingW:2200,addVol:16},
+    ],
+    children:[], userChildren:[]
+  },
+];
+
+// Addons keyed by node id. 'root' = top-level electrolyzer addons
+const ALL_ADDONS = {
+  root: [
+    {id:'wifi',  icon:'📡', name:'WiFi Control Module',  sub:'Remote monitoring via habitat network', vol:1,  effDelta:0,  installed:false, verified:true},
+    {id:'screen',icon:'🖥️', name:'Status Display',       sub:'Real-time flow, temperature, alarms',   vol:2,  effDelta:+1, installed:false, verified:true},
+    {id:'cutoff',icon:'🔐', name:'Overheat Cutoff',      sub:'Auto-shutdown if temp exceeds limit',   vol:1,  effDelta:0,  installed:false, verified:true},
+    {id:'valve', icon:'🔧', name:'Shutoff Valve Assembly',sub:'Manual and auto flow control on all lines', vol:3, effDelta:0, installed:false, verified:true},
+  ],
+  filter: [
+    {id:'filter-cartridge',icon:'🔄',name:'Replacement Cartridge',sub:'Spare filter element for quick swap',vol:1,effDelta:0,installed:false,verified:true},
+    {id:'filter-flush',icon:'💦',name:'Backflush Valve',sub:'Auto-cleans mesh, extends filter life 3×',vol:1,effDelta:+1,installed:false,verified:true},
+  ],
+  bath: [
+    {id:'bath-temp',icon:'🌡️',name:'Temperature Sensor Array',sub:'4-point monitoring inside bath',vol:1,effDelta:+1,installed:false,verified:true},
+    {id:'bath-drain',icon:'🔩',name:'Drain & Purge Valve',sub:'Removes salt deposits, flush contamination',vol:1,effDelta:0,installed:false,verified:true},
+    {id:'bath-extra-electrode',icon:'⚡',name:'Extra Electrode Pair',sub:'+40% active surface area',vol:4,effDelta:+6,installed:false,verified:true},
+  ],
+  electrode: [
+    {id:'elec-rinse',icon:'💧',name:'Electrode Rinse Cycle',sub:'Periodic reverse-current cleaning',vol:0,effDelta:+2,installed:false,verified:true},
+    {id:'elec-coating',icon:'✨',name:'Anti-deposit Coating',sub:'Reduces salt buildup rate by 60%',vol:0,effDelta:+3,installed:false,verified:true},
+  ],
+  membrane: [
+    {id:'memb-support',icon:'🔲',name:'Support Frame',sub:'Prevents membrane buckling under pressure',vol:0,effDelta:+1,installed:false,verified:true},
+  ],
+  'pump-h2': [
+    {id:'ph2-check',icon:'🔒',name:'Check Valve',sub:'Prevents H₂ backflow on shutdown',vol:1,effDelta:0,installed:false,verified:true},
+    {id:'ph2-gauge',icon:'📊',name:'Pressure Gauge',sub:'Analog + digital readout',vol:0,effDelta:0,installed:false,verified:true},
+  ],
+  'pump-o2': [
+    {id:'po2-check',icon:'🔒',name:'Check Valve (O₂-rated)',sub:'O₂-safe materials, prevents backflow',vol:1,effDelta:0,installed:false,verified:true},
+    {id:'po2-relief',icon:'⚠️',name:'Pressure Relief Valve',sub:'Safety release if pressure exceeds 7 bar',vol:1,effDelta:0,installed:false,verified:true},
+  ],
+  cooling: [
+    {id:'cool-flow',icon:'📊',name:'Coolant Flow Meter',sub:'Monitors coolant circulation rate',vol:0,effDelta:0,installed:false,verified:true},
+  ],
+  catalyst: [
+    {id:'cat-inspect',icon:'🔬',name:'Inspection Port',sub:'Visual access for catalyst layer check',vol:0,effDelta:0,installed:false,verified:true},
+  ],
+};
+// Track user addons per node
+const userAddonsByNode = {};
+function getNodeAddons(nodeId) {
+  const base = ALL_ADDONS[nodeId] || [];
+  const user = userAddonsByNode[nodeId] || [];
+  return [...base, ...user];
+}
+// Legacy compat
+const userAddons = [];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+const openNodes = new Set();
+const openForms = new Set();
+
+// ═══════════════════════════════════════
+// PHYSICS
+// ═══════════════════════════════════════
+function findNode(nodes, id) {
+  for(const n of nodes) {
+    if(n.id===id) return n;
+    const all = [...(n.children||[]),...(n.userChildren||[])];
+    const f = findNode(all, id);
+    if(f) return f;
+  }
+  return null;
+}
+
+function getActiveVer(node) {
+  return node.versions.find(v=>v.active) || node.versions[0];
+}
+
+function getEff() {
+  let eff = 60;
+  const bath = findNode(tree,'bath');
+  if(bath){ const v=getActiveVer(bath); eff+=v.effDelta||0; }
+  const electrode = findNode(tree,'electrode');
+  if(electrode){ const v=getActiveVer(electrode); eff+=(v.effDelta||0)*.3; }
+  const membrane = findNode(tree,'membrane');
+  if(membrane){ const v=getActiveVer(membrane); eff+=(v.effDelta||0)*.2; }
+  const cooling = findNode(tree,'cooling');
+  if(cooling){ const v=getActiveVer(cooling); eff+=(v.effDelta||0); }
+  const addonBoost = Object.values(ALL_ADDONS).flat().filter(a=>a.installed&&a.effDelta).reduce((s,a)=>s+a.effDelta,0);
+  eff += addonBoost;
+  return Math.max(20, Math.min(98, eff));
+}
+
+function getCoolingW() {
+  const c = findNode(tree,'cooling');
+  if(!c) return 0;
+  const v = getActiveVer(c);
+  return v.coolingW || 0;
+}
+
+function recalc(flash) {
+  const inTemp  = parseFloat(document.getElementById('in-temp')?.value)||20;
+  const inPress = parseFloat(document.getElementById('in-press')?.value)||1.0;
+  const inFlow  = parseFloat(document.getElementById('in-flow')?.value)||36;
+  const power = 2400;
+  const eff = getEff();
+  const heatW = power*(1-eff/100);
+  const coolingW = getCoolingW();
+  const netHeat = Math.max(0, heatW-coolingW);
+  const massFlowGS = (inFlow/3600)*1000;
+  const deltaT = netHeat/(massFlowGS*4.18);
+  const outTemp = inTemp+deltaT;
+  const molesWater = (inFlow*1000/18)*(eff/100);
+  const h2Vol = molesWater*22.4*(outTemp+273)/273;
+  const o2Vol = h2Vol/2;
+  const outPress = inPress;
+
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  s('out-h2-temp',outTemp.toFixed(1)+' °C');
+  s('out-h2-press',outPress.toFixed(1)+' bar');
+  s('out-h2-flow',h2Vol.toFixed(0)+' L/h');
+  s('out-o2-temp',outTemp.toFixed(1)+' °C');
+  s('out-o2-press',outPress.toFixed(1)+' bar');
+  s('out-o2-flow',o2Vol.toFixed(0)+' L/h');
+  s('pf-power',power+' W');
+  s('pf-eff',eff.toFixed(1)+'%');
+  s('pf-heat',heatW.toFixed(0)+' W');
+  s('pf-dt',(coolingW>0?`+${deltaT.toFixed(1)}°C (${coolingW}W cooled)`:`+${deltaT.toFixed(1)}°C (no cooling)`));
+  s('pv-eff',eff.toFixed(1)+'%');
+  s('pv-h2',h2Vol.toFixed(0)+' L/h');
+  s('pv-o2',o2Vol.toFixed(0)+' L/h');
+  s('pv-heat',heatW.toFixed(0)+' W');
+
+  // DANGER
+  const db = document.getElementById('danger-bar');
+  const dt = document.getElementById('danger-text');
+  if(db){
+    const danger = coolingW===0 && heatW>400;
+    db.classList.toggle('show', danger);
+    if(danger&&dt) dt.textContent=`No cooling. Heat loss ${heatW.toFixed(0)}W raises output by +${deltaT.toFixed(1)}°C. Install cooling system.`;
+  }
+
+  // Space bar
+  const usedVol = calcUsedVol();
+  const freePct = Math.max(0, Math.round((1-usedVol/TOTAL_VOL)*100));
+  const bar=document.getElementById('space-bar');
+  const pct=document.getElementById('free-pct');
+  if(bar){bar.style.width=(100-freePct)+'%';bar.style.background=freePct<10?'#cc0000':freePct<25?'#cc8800':'#0066cc';}
+  if(pct){pct.textContent=freePct+'%';pct.style.color=freePct<10?'#cc0000':freePct<25?'#cc8800':'#007700';}
+
+  // CONTAMINATION — salts stay in bath
+  // Input: 0.10% NaCl + 0.02% CaCl2 + 0.01% MgSO4 by mass
+  // Water density ~1 kg/L. Salts don't decompose, accumulate in bath.
+  const saltFraction = 0.001 + 0.0002 + 0.0001; // 0.13% total dissolved salts
+  const waterMassPerHour = inFlow * 1000; // grams/hour
+  const saltGramsPerHour = waterMassPerHour * saltFraction;
+  const naclGPH = waterMassPerHour * 0.001;
+  const cacl2GPH = waterMassPerHour * 0.0002;
+  const mgso4GPH = waterMassPerHour * 0.0001;
+  const contBox = document.getElementById('contamination-box');
+  const contText = document.getElementById('contamination-text');
+  if(contBox && contText){
+    contBox.style.display = 'block';
+    contText.innerHTML =
+      `Total salt deposition: <b>${saltGramsPerHour.toFixed(1)} g/h</b> (${(saltGramsPerHour*24).toFixed(0)} g/day)<br>` +
+      `NaCl: ${naclGPH.toFixed(2)} g/h · CaCl₂: ${cacl2GPH.toFixed(2)} g/h · MgSO₄: ${mgso4GPH.toFixed(2)} g/h<br>` +
+      `<span style="color:#886600">Deposits on electrodes and membrane. Flush every ${Math.round(500/saltGramsPerHour)} hours. Install drain valve to extend electrode life.</span>`;
+  }
+
+  if(flash){
+    ['pc-eff','pc-h2','pc-o2'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),700);}
+    });
+  }
+}
+
+function calcUsedVol() {
+  function nodeVol(nodes) {
+    return nodes.reduce((s,n)=>{
+      let v = n.vol||0;
+      // cooling: use active version vol
+      if(n.id==='cooling'){ const ver=getActiveVer(n); v=(ver.addVol||0); }
+      return s + v + nodeVol([...(n.children||[]),...(n.userChildren||[])]);
+    },0);
+  }
+  const addonVol = Object.values(ALL_ADDONS).flat().filter(a=>a.installed).reduce((s,a)=>s+a.vol,0);
+  return nodeVol(tree) + addonVol;
+}
+
+// ═══════════════════════════════════════
+// RENDER — RECURSIVE
+// ═══════════════════════════════════════
+
+// ═══════════════════════════════════════
+// BREADCRUMB & CURRENT CONTEXT
+// ═══════════════════════════════════════
+// activeNodePath = array of {id, name} from root downward
+// empty = showing root (electrolyzer) level
+const activeNodePath = [];
+
+function renderBreadcrumb() {
+  const wrap = document.getElementById('breadcrumb-wrap');
+  const addonTitle = document.getElementById('addons-sec-title');
+  if(!wrap) return;
+  if(activeNodePath.length===0){
+    wrap.innerHTML='';
+    if(addonTitle) addonTitle.textContent='Add-ons & optional modules';
+    return;
+  }
+  const items = [
+    `<span class="breadcrumb-item" onclick="navigateTo(-1)">Electrolyzer</span>`
+  ];
+  activeNodePath.forEach((step,i)=>{
+    items.push(`<span class="breadcrumb-sep">›</span>`);
+    if(i < activeNodePath.length-1){
+      items.push(`<span class="breadcrumb-item" onclick="navigateTo(${i})">${step.name}</span>`);
+    } else {
+      items.push(`<span class="breadcrumb-current">${step.name}</span>`);
+    }
+  });
+  wrap.innerHTML=`<div class="breadcrumb">${items.join('')}</div>`;
+  const curName = activeNodePath[activeNodePath.length-1].name;
+  if(addonTitle) addonTitle.textContent=`Add-ons for: ${curName}`;
+}
+
+function navigateTo(idx) {
+  // idx=-1 means go to root
+  if(idx===-1){ activeNodePath.length=0; }
+  else { activeNodePath.splice(idx+1); }
+  renderBreadcrumb();
+  renderAddons();
+}
+
+function openNodeContext(nodeId, nodeName) {
+  // Push to path if not already there
+  const existing = activeNodePath.findIndex(p=>p.id===nodeId);
+  if(existing>=0){ activeNodePath.splice(existing+1); }
+  else { activeNodePath.push({id:nodeId,name:nodeName}); }
+  renderBreadcrumb();
+  renderAddons();
+}
+
+function renderTree() {
+  document.getElementById('comp-tree').innerHTML =
+    tree.map(n=>renderNode(n,0)).join('');
+}
+
+function renderNode(node, depth) {
+  const isOpen = openNodes.has(node.id);
+  const isFormOpen = openForms.has(node.id);
+  const allChildren = [...(node.children||[]),...(node.userChildren||[])];
+  const activeVer = getActiveVer(node);
+
+  const propsHtml = (node.props||[]).map(p=>`
+    <div class="comp-prop">
+      <div class="comp-prop-label">${p.label}</div>
+      <div class="comp-prop-value" style="color:${p.color}">${p.value}</div>
+    </div>`).join('');
+
+  const versionsHtml = (node.versions||[]).map(v=>{
+    const bClass = v.active?'act':v.effDelta>0?'pos':v.effDelta<0?'neg':'neu';
+    const bText  = v.active?'✓ installed':v.effDelta>0?'+'+v.effDelta+'%':v.effDelta<0?v.effDelta+'%':'base';
+    return `
+      <div class="ver-item ${v.active?'active':''}" onclick="installVer('${node.id}','${v.id}')">
+        <div class="ver-avatar">${v.author.charAt(0)}</div>
+        <div class="ver-info">
+          <div class="ver-name">${v.name}${v.verified?' <span style="color:#007700;font-size:.6rem">✓</span>':''}</div>
+          <div class="ver-sub">${v.author} · ${v.sub}</div>
+        </div>
+        <span class="ver-badge ${bClass}">${bText}</span>
+        ${!v.active?`<button class="install-btn" onclick="event.stopPropagation();installVer('${node.id}','${v.id}')">Install</button>`:''}
+      </div>`;
+  }).join('');
+
+  const childrenHtml = allChildren.length>0 ? `
+    <div class="comp-children">
+      <div class="comp-children-title">Components inside (${allChildren.length})</div>
+      <div class="children-indent">
+        ${allChildren.map(c=>renderNode(c,depth+1)).join('')}
+      </div>
+    </div>` : '';
+
+  const formHtml = `
+    <div class="add-form ${isFormOpen?'show':''}" id="form_${node.id}">
+      <div class="add-form-title">⊕ Add component to ${node.name}</div>
+      <div class="af-row-2">
+        <div><div class="af-label">Your name</div><input class="af-input" id="af_author_${node.id}" placeholder="Name or callsign"></div>
+        <div><div class="af-label">Component name</div><input class="af-input" id="af_name_${node.id}" placeholder="Short name"></div>
+      </div>
+      <div class="af-row">
+        <div class="af-label">Materials &amp; task — what does it do?${node.physKey?` <span class="phys-link" onclick="showPhys('${node.physKey}',event)">(physics)</span>`:''}</div>
+        <textarea class="af-textarea" id="af_task_${node.id}" placeholder="Describe materials, function, why it improves performance..."></textarea>
+        <div class="af-hint">Be specific. AI will check physical consistency and whether it fits in available space.</div>
+      </div>
+      <div class="af-row">
+        <div class="af-label">Novelty — what's different from existing?</div>
+        <textarea class="af-textarea" id="af_novel_${node.id}" placeholder="What existing version does this improve on and how?"></textarea>
+      </div>
+      <div class="af-row-2">
+        <div><div class="af-label">Dimensions (L×W×H cm)</div><input class="af-input" id="af_dims_${node.id}" placeholder="e.g. 15×10×8"></div>
+        <div><div class="af-label">Efficiency effect</div><input class="af-input" id="af_eff_${node.id}" placeholder="e.g. +5%, neutral"></div>
+      </div>
+      <div class="af-btns">
+        <button class="af-btn primary" onclick="submitForm('${node.id}')">Submit for AI verification</button>
+        <button class="af-btn" onclick="hideForm('${node.id}')">Cancel</button>
+      </div>
+      <div class="ai-result" id="ai_${node.id}"></div>
+    </div>`;
+
+  return `
+    <div class="comp-node ${isOpen?'open':''}" id="node_${node.id}" data-depth="${Math.min(depth,4)}">
+      <div class="comp-head" onclick="toggleNode('${node.id}');if(openNodes.has('${node.id}'))openNodeContext('${node.id}','${node.name.replace(/'/g,"\\'").replace(/\`/g,'\\`')}');else{const idx=activeNodePath.findIndex(p=>p.id==='${node.id}');if(idx>=0)activeNodePath.splice(idx);renderBreadcrumb();renderAddons();}">
+        <div class="comp-icon">${node.icon}</div>
+        <div class="comp-info">
+          <div class="comp-name">${node.name}</div>
+          <div class="comp-sub">${node.sub}</div>
+        </div>
+        <div class="comp-vol-badge">${(node.id==='cooling'?getActiveVer(node).addVol||0:node.vol)>0?(node.id==='cooling'?getActiveVer(node).addVol||0:node.vol)+' L':''}</div>
+        <button class="comp-action-btn" onclick="event.stopPropagation();showForm('${node.id}')">⊕ Add</button>
+        <button class="comp-toggle" onclick="event.stopPropagation();toggleNode('${node.id}')">${isOpen?'▲':'▼'}</button>
+      </div>
+      <div class="comp-body">
+        <div class="comp-desc">${node.desc}${node.physKey?` <span class="phys-link" onclick="showPhys('${node.physKey}',event)">physics →</span>`:''}</div>
+        <div class="comp-props">${propsHtml}</div>
+        <div class="comp-versions-title">Versions (${node.versions.length})</div>
+        ${versionsHtml}
+        ${childrenHtml}
+        <button class="add-new-btn" onclick="showForm('${node.id}')">⊕ Add component inside ${node.name}</button>
+        ${formHtml}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════
+// ADDONS
+// ═══════════════════════════════════════
+function renderAddons() {
+  const list = document.getElementById('addons-list');
+  // Determine which node's addons to show
+  const curId = activeNodePath.length>0 ? activeNodePath[activeNodePath.length-1].id : 'root';
+  const all = getNodeAddons(curId);
+  list.innerHTML = all.map(a=>`
+    <div class="addon-item ${a.installed?'installed':''}">
+      <div class="addon-icon">${a.icon}</div>
+      <div class="addon-info">
+        <div class="addon-name">${a.name}${a.verified?' <span style="color:#007700;font-size:.6rem">✓</span>':''}</div>
+        <div class="addon-sub">${a.sub} · ${a.vol}L${a.effDelta?` · +${a.effDelta}% efficiency`:''}</div>
+      </div>
+      ${a.installed
+        ?`<span class="ver-badge act">✓ installed</span>`
+        :`<button class="install-btn" onclick="installAddon('${a.id}')">Install</button>`}
+    </div>`).join('');
+}
+
+function installAddon(id) {
+  const curId = activeNodePath.length>0 ? activeNodePath[activeNodePath.length-1].id : 'root';
+  const a = getNodeAddons(curId).find(x=>x.id===id);
+  if(!a) return;
+  const used = calcUsedVol();
+  if(used+a.vol>TOTAL_VOL){ toast('⚠ Not enough space'); return; }
+  a.installed=true;
+  renderAddons();
+  recalc(a.effDelta!==0);
+  toast(`⚙ Installing: ${a.name}...`);
+}
+
+// ═══════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════
+function toggleNode(id) {
+  if(openNodes.has(id)) openNodes.delete(id); else openNodes.add(id);
+  renderTree();
+}
+
+function showForm(id) {
+  openNodes.add(id);
+  openForms.add(id);
+  renderTree();
+  setTimeout(()=>{
+    const el=document.getElementById('af_author_'+id);
+    if(el){el.focus();el.scrollIntoView({behavior:'smooth',block:'center'});}
+  },100);
+}
+
+function hideForm(id) {
+  openForms.delete(id);
+  renderTree();
+}
+
+function installVer(nodeId, verId) {
+  const node = findNode(tree, nodeId);
+  if(!node) return;
+  node.versions.forEach(v=>v.active=v.id===verId);
+  const ver = node.versions.find(v=>v.id===verId);
+  // Update cooling sub/props display
+  if(nodeId==='cooling'){
+    node.sub = ver.coolingW>0?`Thermal management · ${ver.name}`:'Thermal management · not connected';
+    node.vol = ver.addVol||0;
+    node.props=[
+      {label:'Status',value:ver.coolingW>0?'ACTIVE':'NOT CONNECTED',color:ver.coolingW>0?'#007700':'#cc0000'},
+      {label:'Volume',value:ver.addVol>0?ver.addVol+'L':'0 L',color:'#996600'},
+      {label:'Heat removal',value:ver.coolingW>0?ver.coolingW+'W max':'0 W',color:ver.coolingW>0?'#0066cc':'#8aa0b8'},
+      {label:'Coolant',value:ver.coolingW===1500?'Water':ver.coolingW===2200?'Ammonia':'—',color:'#555'},
+    ];
+  }
+  recalc(true);
+  renderTree();
+  toast(`⚙ Installing: ${ver.name}...`);
+}
+
+function submitForm(nodeId) {
+  const author = document.getElementById('af_author_'+nodeId)?.value.trim();
+  const name   = document.getElementById('af_name_'+nodeId)?.value.trim();
+  const task   = document.getElementById('af_task_'+nodeId)?.value.trim();
+  const novel  = document.getElementById('af_novel_'+nodeId)?.value.trim();
+  const dimsRaw= document.getElementById('af_dims_'+nodeId)?.value.trim();
+  const effRaw = document.getElementById('af_eff_'+nodeId)?.value.trim();
+  const res    = document.getElementById('ai_'+nodeId);
+
+  if(!name){ toast('Please enter component name'); return; }
+
+  const dm = dimsRaw.match(/(\d+)[^\d]+(\d+)[^\d]+(\d+)/);
+  const vol = dm ? Math.round(parseInt(dm[1])*parseInt(dm[2])*parseInt(dm[3])/1000) : 2;
+  const em = effRaw.match(/([+-]?\d+)/);
+  const effDelta = em ? parseInt(em[1]) : 0;
+
+  if(res){ res.className='ai-result show warn'; res.innerHTML='<b style="color:#cc8800">⏳ AI verification...</b>'; }
+
+  setTimeout(()=>{
+    const used = calcUsedVol();
+    const fits = (used+vol)<=TOTAL_VOL;
+    const hasTask = task&&task.length>10;
+    const hasNovel = novel&&novel.length>5;
+    const score = (hasTask?1:0)+(hasNovel?1:0);
+
+    if(fits && score>=1){
+      const node = findNode(tree, nodeId);
+      if(node){
+        if(!node.userChildren) node.userChildren=[];
+        const icons={'Structural':'🔩','Thermal':'🌡️','Sensor':'📡','Mechanical':'⚙️','Chemical':'🧪','Custom':'⚙️'};
+        node.userChildren.push({
+          id:'uc_'+Date.now(), icon:'⚙️',
+          name, sub:(author||'User')+' · '+( task||'').substring(0,40),
+          vol, desc:task||'User-defined component.',
+          physKey:null,
+          props:[{label:'Volume',value:vol+'L',color:'#996600'},{label:'Effect',value:(effDelta>=0?'+':'')+effDelta+'%',color:effDelta>0?'#007700':effDelta<0?'#cc0000':'#555'}],
+          versions:[{id:'v0',author:author||'User',name:name,sub:'Initial version',effDelta,active:true,verified:false}],
+          children:[], userChildren:[]
+        });
+      }
+      if(res){ res.className='ai-result show ok'; res.innerHTML=`<b style="color:#007700">✓ Added — pending moderation</b><br>Volume: ${vol}L · Free after: ${TOTAL_VOL-used-vol}L`; }
+      setTimeout(()=>{ hideForm(nodeId); renderTree(); recalc(effDelta!==0); },1500);
+    } else if(!fits){
+      if(res){ res.className='ai-result show bad'; res.innerHTML=`<b style="color:#cc0000">✗ Does not fit</b><br>${vol}L needed, ${TOTAL_VOL-used}L available`; }
+    } else {
+      if(res){ res.className='ai-result show warn'; res.innerHTML='<b style="color:#cc8800">⚠ Please describe what the component does</b>'; }
+    }
+  },1000);
+}
+
+// top-level add form
+function showTopForm() {
+  document.getElementById('top-add-form').classList.add('show');
+  setTimeout(()=>document.getElementById('taf-author')?.focus(),100);
+}
+function hideTopForm() { document.getElementById('top-add-form').classList.remove('show'); }
+function submitTopForm() {
+  const author = document.getElementById('taf-author')?.value.trim();
+  const name   = document.getElementById('taf-name')?.value.trim();
+  const task   = document.getElementById('taf-task')?.value.trim();
+  const dimsRaw= document.getElementById('taf-dims')?.value.trim();
+  const effRaw = document.getElementById('taf-eff')?.value.trim();
+  const res    = document.getElementById('taf-result');
+  if(!name){ toast('Please enter component name'); return; }
+  const dm = dimsRaw.match(/(\d+)[^\d]+(\d+)[^\d]+(\d+)/);
+  const vol = dm ? Math.round(parseInt(dm[1])*parseInt(dm[2])*parseInt(dm[3])/1000) : 2;
+  const em = effRaw.match(/([+-]?\d+)/);
+  const effDelta = em ? parseInt(em[1]) : 0;
+  if(res){ res.className='ai-result show warn'; res.innerHTML='<b style="color:#cc8800">⏳ Verifying...</b>'; }
+  setTimeout(()=>{
+    const used=calcUsedVol();
+    const fits=(used+vol)<=TOTAL_VOL;
+    const hasTask=task&&task.length>10;
+    if(fits&&hasTask){
+      userAddons.push({id:'ua_'+Date.now(),icon:'⚙️',name,sub:(author||'User')+' · '+(task||'').substring(0,40),vol,effDelta,installed:false,verified:false});
+      if(res){res.className='ai-result show ok';res.innerHTML=`<b style="color:#007700">✓ Added</b> · ${vol}L · ${TOTAL_VOL-used-vol}L free`;}
+      renderAddons();
+      setTimeout(()=>{hideTopForm();if(res)res.className='ai-result';},1500);
+    } else if(!fits){
+      if(res){res.className='ai-result show bad';res.innerHTML=`<b style="color:#cc0000">✗ Does not fit</b> — ${vol}L needed, ${TOTAL_VOL-used}L free`;}
+    } else {
+      if(res){res.className='ai-result show warn';res.innerHTML='<b style="color:#cc8800">⚠ Describe what the component does</b>';}
+    }
+  },900);
+}
+
+// ═══════════════════════════════════════
+// MAIN MENU
+// ═══════════════════════════════════════
+function toggleMainMenu(e){
+  e.stopPropagation();
+  const m=document.getElementById('main-menu');
+  const o=document.getElementById('overlay');
+  const open=m.classList.contains('show');
+  closeAll();
+  if(!open){m.classList.add('show');o.classList.add('show');}
+}
+function closeAll(){
+  document.getElementById('main-menu').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
+// PHYSICS POPUP
+// ═══════════════════════════════════════
+let physOpen=false;
+function showPhys(key,e){
+  e.stopPropagation();
+  const p=PHYS[key]; if(!p) return;
+  const pop=document.getElementById('phys-popup');
+  document.getElementById('pp-title').textContent=p.title;
+  document.getElementById('pp-body').innerHTML=p.body;
+  const x=Math.min(e.clientX+10, window.innerWidth-320);
+  const y=Math.min(e.clientY+10, window.innerHeight-200);
+  pop.style.left=x+'px'; pop.style.top=y+'px';
+  pop.classList.add('show'); physOpen=true;
+}
+function closePhys(){ document.getElementById('phys-popup').classList.remove('show'); physOpen=false; }
+document.addEventListener('click',()=>{ if(physOpen) closePhys(); });
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function toast(msg){
+  const w=document.getElementById('toast');
+  const el=document.createElement('div');
+  el.className='toast-item'; el.textContent=msg;
+  w.appendChild(el); setTimeout(()=>el.remove(),3000);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+renderTree();
+renderBreadcrumb();
+renderAddons();
+recalc(false);
+</script>
+</body>
+</html>
