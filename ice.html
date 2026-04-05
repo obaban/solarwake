@@ -4,106 +4,143 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SolarWake: Ice. Cheapest asteroid habitat</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: black;
-            overflow: hidden;
-            height: 100vh;
-            font-family: sans-serif;
-            color: #FFD700; /* Весь текст желтый */
-        }
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            pointer-events: none;
-        }
+   <style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: black;
+        overflow: hidden;
+        height: 100vh;
+        font-family: sans-serif;
+        color: #FFD700; /* All text in yellow */
+    }
+    canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        pointer-events: none;
+    }
+    .layout {
+        display: flex;
+        position: relative;
+        z-index: 1;
+        height: 100vh;
+    }
+    /* Menu placeholder */
+    #menu-placeholder {
+        height: 100vh;
+    }
+    .sidebar {
+        width: 280px;
+        padding: 30px 20px;
+        background: rgba(0, 0, 0, 0.9);
+        border-right: 1px solid #FFD700;
+        height: 100%;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+    .logo { 
+        width: 120px; 
+        margin-bottom: 30px; 
+        display: block; 
+    }
+    .nav-menu { 
+        list-style: none; 
+        padding: 0; 
+        margin: 0; 
+    }
+    .nav-item { 
+        margin-bottom: 10px; 
+    }
+    .main-link, .category {
+        cursor: pointer;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #FFD700;
+        text-decoration: none;
+    }
+    .main-link a, .submenu li a {
+        color: inherit;
+        text-decoration: none;
+    }
+    .category {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+    }
+    .category::after { 
+        content: '▼'; 
+        font-size: 0.7em; 
+        transition: 0.3s; 
+    }
+    .category.active::after { 
+        transform: rotate(-180deg); 
+    }
+    .submenu { 
+        list-style: none; 
+        padding-left: 15px; 
+        display: none; 
+        margin: 5px 0; 
+    }
+    .submenu.show { 
+        display: block; 
+    }
+    .submenu li { 
+        padding: 5px 0; 
+        font-size: 0.85em; 
+        opacity: 0.8; 
+    }
+    .submenu li:hover { 
+        opacity: 1; 
+        text-decoration: underline; 
+    }
+    .bottom-links { 
+        margin-top: 30px; 
+        padding-top: 20px; 
+        border-top: 1px solid #FFD700; 
+    }
+
+    /* === MOBILE FIX: hide or narrow left menu on small screens === */
+    @media (max-width: 768px) {
         .layout {
-            display: flex;
-            position: relative;
-            z-index: 1;
-            height: 100vh;
+            flex-direction: column;  /* stack menu on top or hide */
         }
-        /* styles loading menu */
-        #menu-placeholder {
-            height: 100vh;
-        }
+
         .sidebar {
-            width: 280px;
-            padding: 30px 20px;
-            background: rgba(0, 0, 0, 0.9);
-            border-right: 1px solid #FFD700;
-            height: 100%;
+            width: 100%;             /* full width initially, but... */
+            height: auto;            /* not 100vh to avoid eating screen */
+            max-height: 100vh;
             overflow-y: auto;
-            box-sizing: border-box;
-        }
-        .logo { width: 120px; margin-bottom: 30px; display: block; }
-        .nav-menu { list-style: none; padding: 0; margin: 0; }
-        .nav-item { margin-bottom: 10px; }
-        .main-link, .category {
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #FFD700;
-            text-decoration: none;
-        }
-        .main-link a, .submenu li a {
-            color: inherit;
-            text-decoration: none;
-        }
-        .category {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-        }
-        .category::after { content: '▼'; font-size: 0.7em; transition: 0.3s; }
-        .category.active::after { transform: rotate(-180deg); }
-        .submenu { list-style: none; padding-left: 15px; display: none; margin: 5px 0; }
-        .submenu.show { display: block; }
-        .submenu li { padding: 5px 0; font-size: 0.85em; opacity: 0.8; }
-        .submenu li:hover { opacity: 1; text-decoration: underline; }
-        .bottom-links { margin-top: 30px; padding-top: 20px; border-top: 1px solid #FFD700; }
-
-        .content {
-            flex: 1;
-            padding: 60px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.2);
-        }
-        h1 { font-size: 2.2em; margin-top: 0; text-transform: uppercase; color: #FFD700; }
-        p { line-height: 1.6; font-size: 1.1em; max-width: 800px; margin-bottom: 25px; color: #FFD700; }
-a {
-    color: #FFD700 !important;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-p, h1, .category, .main-link {
-            color: #FFD700 !important;
+            position: relative;
+            border-right: none;
+            border-bottom: 1px solid #FFD700;
+            padding: 15px 10px;      /* smaller padding on mobile */
         }
 
-        .sidebar a, .submenu li a, a {
-            color: #00ccff !important;
-            text-decoration: none;
-            transition: opacity 0.2s;
+        /* Option: completely hide sidebar on mobile */
+        /* .sidebar { display: none; } */
+
+        #menu-placeholder {
+            height: auto;  /* don't fix height */
         }
 
-        .sidebar a:hover, .submenu li a:hover, a:hover {
-            text-decoration: underline;
-            opacity: 0.8;
+        body {
+            overflow-y: auto;  /* allow page scrolling */
         }
+    }
 
-        .sidebar a:visited, a:visited {
-            color: #00ccff !important;
-        }
-    </style>
+    /* Optional: sliding sidebar on mobile (add toggle button in HTML if needed) */
+    .sidebar.hidden-on-mobile {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    .sidebar.active {
+        transform: translateX(0);
+    }
+</style>
 </head>
 <body>
 
